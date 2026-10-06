@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viking Planner</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+  :root{
+    --bg:#17130f; --bg-panel:#221c16; --bg-raised:#2b241c; --line:#3d3327;
+    --ember:#d9540d; --ember-bright:#f2792c; --gold:#c9a227; --gold-bright:#e8bf3c;
+    --steel:#7c8a94; --cav:#8a5a3c; --parchment:#ece3d3; --dim:#a89d8a;
+    --danger:#b8402e; --ok:#6f9b52;
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:var(--bg); color:var(--parchment); font-family:'Inter',sans-serif; }
+  body{
+    background-image:
+      radial-gradient(circle at 15% 0%, rgba(217,84,13,0.10), transparent 45%),
+      radial-gradient(circle at 100% 30%, rgba(201,162,39,0.07), transparent 40%);
+    min-height:100vh; padding:44px 16px 80px;
+  }
+  .wrap{ max-width:780px; margin:0 auto; }
+
+  .banner{ text-align:center; margin-bottom:40px; }
+  .eyebrow{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
+  h1{ font-family:'Cinzel',serif; font-weight:900; font-size:clamp(30px,6vw,46px); margin:0 0 10px; text-shadow:0 0 30px rgba(217,84,13,0.35); }
+  h1 span{ color:var(--ember-bright); }
+  .sub{ color:var(--dim); font-size:15px; max-width:500px; margin:0 auto; line-height:1.5; }
+
+  .panel{ background:var(--bg-panel); border:1px solid var(--line); border-radius:6px; padding:26px 22px 24px; margin-bottom:22px; position:relative; }
+  .panel[data-step]::before{
+    content:attr(data-step); position:absolute; top:-12px; inset-inline-start:20px; background:var(--ember); color:#1a1310;
+    font-family:'JetBrains Mono',monospace; font-weight:700; font-size:11px; padding:3px 10px; border-radius:3px; letter-spacing:1px;
+  }
+  .panel h2{ font-family:'Cinzel',serif; font-size:18px; font-weight:700; margin:4px 0 16px; color:var(--gold-bright); }
+  .hint{ font-size:13px; color:var(--dim); line-height:1.55; margin:-6px 0 16px; }
+
+  .row{ display:flex; gap:10px; flex-wrap:wrap; }
+  .pill{
+    flex:1; min-width:120px; background:var(--bg-raised); border:1px solid var(--line); color:var(--dim);
+    padding:12px 14px; border-radius:5px; cursor:pointer; text-align:center; font-size:14px; font-weight:600;
+    transition:border-color .15s,color .15s,background .15s; user-select:none; font-family:inherit;
+  }
+  .pill:hover{ border-color:var(--ember); color:var(--parchment); }
+  .pill.active{ background:linear-gradient(180deg,rgba(217,84,13,0.22),rgba(217,84,13,0.08)); border-color:var(--ember-bright); color:var(--parchment); }
+  .pill small{ display:block; font-weight:400; font-size:11.5px; color:var(--dim); margin-top:3px; }
+
+  .grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  @media (max-width:560px){ .grid3{ grid-template-columns:1fr; } }
+  .field{ margin-bottom:16px; } .field:last-child{ margin-bottom:0; }
+  label{ display:block; font-size:12px; text-transform:uppercase; letter-spacing:1.2px; color:var(--dim); margin-bottom:7px; font-weight:600; }
+  input[type=number]{
+    width:100%; background:var(--bg-raised); border:1px solid var(--line); color:var(--parchment);
+    font-family:'JetBrains Mono',monospace; font-size:16px; padding:11px 13px; border-radius:5px; outline:none;
+  }
+  input[type=number]:focus{ border-color:var(--ember-bright); }
+  .troop-label{ display:flex; align-items:center; gap:7px; }
+  .swatch{ width:9px; height:9px; border-radius:2px; display:inline-block; }
+  .sw-inf{ background:var(--steel); } .sw-cav{ background:var(--cav); } .sw-arc{ background:var(--gold); }
+  .note{ font-size:11.5px; color:var(--dim); margin-top:6px; }
+
+  input[type=range]{ width:100%; -webkit-appearance:none; appearance:none; height:6px; border-radius:3px; background:linear-gradient(90deg,var(--steel),var(--cav)); outline:none; }
+  input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:var(--parchment); border:2px solid #1a1310; cursor:pointer; }
+  input[type=range]::-moz-range-thumb{ width:16px; height:16px; border-radius:50%; background:var(--parchment); border:2px solid #1a1310; cursor:pointer; }
+  .split-top{ display:flex; justify-content:space-between; font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--dim); margin-bottom:8px; }
+  .split-top b{ color:var(--parchment); }
+
+  /* ratio options */
+  .empty{ text-align:center; color:var(--dim); font-size:14px; padding:18px 0 6px; }
+  .opts{ display:grid; gap:10px; }
+  .opt{
+    display:grid; grid-template-columns:1fr auto; gap:4px 12px; align-items:center;
+    background:var(--bg-raised); border:1px solid var(--line); border-radius:5px; padding:12px 14px; cursor:pointer;
+    text-align:left; color:var(--parchment); font-family:inherit; width:100%;
+  }
+  .opt:hover{ border-color:var(--gold); }
+  .opt.active{ border-color:var(--gold-bright); background:rgba(201,162,39,0.10); box-shadow:inset 0 0 0 1px rgba(232,191,60,0.25); }
+  .opt .ratio{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:16px; }
+  .opt .tag{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:1px; text-transform:uppercase; padding:2px 7px; border-radius:3px; margin-left:8px; vertical-align:2px; }
+  .tag.rec{ background:var(--ember); color:#1a1310; }
+  .opt .status{ font-size:12.5px; text-align:right; font-family:'JetBrains Mono',monospace; }
+  .status.ok{ color:#a9c894; } .status.need{ color:#e0968a; }
+  .opt .desc{ grid-column:1 / -1; font-size:12px; color:var(--dim); }
+  .ratio-legend{ font-size:11.5px; color:var(--dim); margin-bottom:10px; font-family:'JetBrains Mono',monospace; }
+
+  /* results */
+  .summary{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:18px; }
+  @media (max-width:520px){ .summary{ grid-template-columns:1fr; } }
+  .stat{ background:var(--bg-raised); border:1px solid var(--line); border-radius:5px; padding:12px; text-align:center; }
+  .stat .n{ font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:700; color:var(--gold-bright); }
+  .stat .l{ font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--dim); margin-top:4px; }
+
+  .msg{ border-radius:5px; padding:12px 15px; font-size:13.5px; margin-bottom:16px; border:1px solid; line-height:1.55; }
+  .msg.ok{ background:rgba(111,155,82,0.10); border-color:rgba(111,155,82,0.4); color:#a9c894; }
+  .msg.warn{ background:rgba(184,64,46,0.10); border-color:rgba(184,64,46,0.45); color:#e0968a; }
+  .msg b{ color:var(--parchment); }
+
+  .march{ background:var(--bg-raised); border:1px solid var(--line); border-radius:5px; padding:13px 15px; margin-bottom:10px; }
+  .march.lead{ border-color:rgba(232,191,60,0.5); }
+  .march .head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:9px; gap:10px; }
+  .march .name{ font-family:'Cinzel',serif; font-weight:700; font-size:14px; }
+  .march.lead .name{ color:var(--gold-bright); }
+  .march .cap{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--dim); white-space:nowrap; }
+  .bar{ display:flex; height:18px; border-radius:3px; overflow:hidden; margin-bottom:9px; background:var(--bg); }
+  .bar div{ height:100%; }
+  .b-inf{ background:var(--steel); } .b-cav{ background:var(--cav); } .b-arc{ background:var(--gold); }
+  .breakdown{ display:flex; gap:16px; flex-wrap:wrap; font-family:'JetBrains Mono',monospace; font-size:12.5px; color:var(--dim); }
+  .breakdown b{ color:var(--parchment); }
+
+  .copy{
+    width:100%; margin-top:8px; background:transparent; border:1px solid var(--line); color:var(--parchment);
+    font-family:'JetBrains Mono',monospace; font-size:13px; padding:11px; border-radius:5px; cursor:pointer;
+  }
+  .copy:hover{ border-color:var(--gold); }
+
+  .gens .pill{ min-width:120px; flex:1 1 calc(25% - 10px); padding:11px 8px; font-family:'JetBrains Mono',monospace; }
+  .tag.alt{ background:var(--steel); color:#1a1310; }
+  .opt .ratio{ white-space:nowrap; }
+  @media (max-width:560px){ .opt{ grid-template-columns:1fr; } .opt .status{ text-align:left; } }
+  .lang{ display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin-bottom:22px; }
+  .lang button{ background:var(--bg-raised); border:1px solid var(--line); color:var(--dim); font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; padding:6px 11px; border-radius:4px; cursor:pointer; letter-spacing:1px; }
+  .lang button:hover{ border-color:var(--gold); color:var(--parchment); }
+  .lang button.active{ border-color:var(--gold-bright); color:var(--gold-bright); background:rgba(201,162,39,0.10); }
+    .grid2{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+  @media (max-width:560px){ .grid2{ grid-template-columns:1fr; } }
+  .troop-h{ font-family:'Cinzel',serif; font-size:14px; color:var(--parchment); margin:4px 0 10px; display:flex; align-items:center; gap:8px; }
+  .troop-h + .grid2{ margin-bottom:18px; }
+  .sw-inf9{ background:#b3bec6; } .sw-cav9{ background:#c48a60; }
+  .b-inf9{ background:#b3bec6; } .b-cav9{ background:#c48a60; }
+  .march.home{ border-color:rgba(111,155,82,0.5); }
+  .march.home .name{ color:#a9c894; }
+  .march.risk{ border-color:rgba(184,64,46,0.6); }
+  .march.risk .name{ color:#e0968a; }
+  .legend{ display:flex; gap:14px; flex-wrap:wrap; font-size:12px; color:var(--dim); margin:0 0 14px; }
+  .legend span{ display:flex; align-items:center; gap:6px; }
+  @media (max-width:560px){ .grid2.tiers{ grid-template-columns:1fr 1fr; } }
+  input[type=range].bison{ background:linear-gradient(90deg,var(--line),var(--gold)); }
+  .eff{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; background:var(--bg-raised); border:1px solid var(--gold); border-radius:5px; padding:12px 14px; font-size:13px; color:var(--dim); }
+  .eff b{ font-family:'JetBrains Mono',monospace; font-size:18px; color:var(--gold-bright); }
+  .msg ul li{ margin:2px 0; }
+  .copybox{ width:100%; margin-top:10px; background:var(--bg); color:var(--parchment); border:1px solid var(--gold); border-radius:5px; padding:10px 12px; font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1.5; resize:vertical; }
+  .copybox[hidden]{ display:none; }
+  .needs{ margin-top:18px; }
+  .needs .msg{ margin-bottom:0; }
+  .needs .wait{ font-size:12.5px; color:var(--dim); border:1px dashed var(--line); border-radius:5px; padding:11px 14px; line-height:1.5; }
+  .needs ul{ margin:8px 0 0; padding-left:18px; }
+  .needs li{ margin:3px 0; }
+  .needs li.miss{ color:var(--dim); }
+  .heal-res{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:14px; }
+  @media (max-width:520px){ .heal-res{ grid-template-columns:1fr 1fr; } }
+  .heal-intro{ font-size:13px; color:var(--dim); line-height:1.55; margin:0 0 14px; }
+  .heal-intro b{ color:var(--parchment); }
+  html[lang^=zh] label, html[lang^=zh] .stat .l{ letter-spacing:0; }
+  .sum-text{ white-space:pre-wrap; background:var(--bg); border:1px solid var(--line); border-radius:5px; padding:12px 14px; margin:0; font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1.6; color:var(--parchment); }
+  .heal-per{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--dim); margin:0; }
+  .footnote{ text-align:center; font-size:12px; color:var(--dim); margin-top:28px; line-height:1.6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="lang" role="group" aria-label="Language">
+    <button data-lang="en">EN</button><button data-lang="fr">FR</button><button data-lang="es">ES</button><button data-lang="pt">PT</button><button data-lang="zh-Hans">简体</button>
+  </div>
+
+  <div class="banner">
+    <div class="eyebrow" data-i="eyebrow"></div>
+    <h1 data-i="title"></h1>
+    <p class="sub" data-i="sub"></p>
+  </div>
+
+  <!-- 01 TROOPS -->
+  <div class="panel" data-step="01">
+    <h2 data-i="s1"></h2>
+    <div class="troop-h"><span class="swatch sw-inf"></span><span data-i="inf"></span></div>
+    <div class="grid2 tiers">
+      <div class="field"><label for="infT10">T10</label><input type="number" id="infT10" min="0" step="1000" data-ph="120000"></div>
+      <div class="field"><label for="infT9">T9</label><input type="number" id="infT9" min="0" step="1000" data-ph="80000"></div>
+    </div>
+    <div class="troop-h"><span class="swatch sw-cav"></span><span data-i="cav"></span></div>
+    <div class="grid2 tiers">
+      <div class="field"><label for="cavT10">T10</label><input type="number" id="cavT10" min="0" step="1000" data-ph="150000"></div>
+      <div class="field"><label for="cavT9">T9</label><input type="number" id="cavT9" min="0" step="1000" data-ph="100000"></div>
+    </div>
+    <div class="note" data-i="archNote"></div>
+  </div>
+
+  <!-- 02 INFIRMARY -->
+  <div class="panel" data-step="02">
+    <h2 data-i="s2"></h2>
+    <div class="field">
+      <label for="infirm" data-i="infirmL"></label>
+      <input type="number" id="infirm" min="0" step="1000" data-ph="100000">
+      <div class="note" data-i="infirmNote"></div>
+    </div>
+  </div>
+
+  <!-- 03 SQUAD DEPLOYMENT -->
+  <div class="panel" data-step="03">
+    <h2 data-i="s3"></h2>
+    <div class="field">
+      <label data-i="marchQ"></label>
+      <div class="row">
+        <button class="pill" data-marches="4">4</button>
+        <button class="pill active" data-marches="5">5</button>
+        <button class="pill" data-marches="6">6</button>
+      </div>
+    </div>
+    <div class="field">
+      <label for="squad" data-i="squadL"></label>
+      <input type="number" id="squad" min="1000" step="1000" data-ph="90000">
+      <div class="note" data-i="squadNote"></div>
+    </div>
+    <div id="needs" class="needs"></div>
+  </div>
+
+  <!-- 04 PET SKILL -->
+  <div class="panel" data-step="04">
+    <h2 data-i="s4"></h2>
+    <div class="field">
+      <label for="bison" data-i="bisonL"></label>
+      <div class="split-top"><span id="bisonLv"></span><b id="bisonAdd"></b></div>
+      <input type="range" id="bison" class="bison" min="0" max="10" step="1" value="0">
+    </div>
+  </div>
+
+  <!-- 05 BUFF -->
+  <div class="panel" data-step="05">
+    <h2 data-i="s5"></h2>
+    <div class="field">
+      <label data-i="boostL"></label>
+      <div class="row">
+        <button class="pill active" data-boost="0"><span data-i="boostNone"></span><small>—</small></button>
+        <button class="pill" data-boost="10">+10%<small data-i="gems2k"></small></button>
+        <button class="pill" data-boost="20">+20%<small data-i="gems20k"></small></button>
+      </div>
+    </div>
+    <div class="eff" style="margin-top:18px;"><span data-i="effL"></span><b id="effVal"></b></div>
+  </div>
+
+  <!-- 06 PLAN -->
+  <div class="panel" data-step="06">
+    <h2 data-i="s6"></h2>
+    <div id="empty" class="empty"></div>
+    <div id="results" style="display:none;">
+      <div id="status"></div>
+      <div class="summary">
+        <div class="stat"><div class="n" id="sSent">–</div><div class="l" data-i="statSent"></div></div>
+        <div class="stat"><div class="n" id="sInfirm">–</div><div class="l" data-i="statInfirm"></div></div>
+        <div class="stat"><div class="n" id="sRisk">–</div><div class="l" data-i="statRisk"></div></div>
+      </div>
+      <div class="legend">
+        <span><i class="swatch sw-inf"></i><span data-i="lgInf10"></span></span>
+        <span><i class="swatch sw-inf9"></i><span data-i="lgInf9"></span></span>
+        <span><i class="swatch sw-cav9"></i><span data-i="lgCav9"></span></span>
+        <span><i class="swatch sw-cav"></i><span data-i="lgCav10"></span></span>
+      </div>
+      <div id="marchList"></div>
+      <button class="copy" id="copyBtn" data-i="copy"></button>
+    <textarea id="copyBox" class="copybox" readonly hidden></textarea>
+    </div>
+  </div>
+
+  <!-- 07 HEALING COST -->
+  <div class="panel" data-step="07">
+    <h2 data-i="s7"></h2>
+    <div id="healOut"></div>
+  </div>
+
+  <!-- 08 SUMMARY -->
+  <div class="panel" data-step="08">
+    <h2 data-i="s8"></h2>
+    <div id="sumEmpty" class="empty"></div>
+    <div id="sumWrap" style="display:none;">
+      <pre id="sumText" class="sum-text"></pre>
+      <button class="copy" id="sumBtn" data-i="sumCopy" style="margin-top:12px;"></button>
+      <textarea id="sumBox" class="copybox" readonly hidden></textarea>
+    </div>
+  </div>
+
+  <p class="footnote" data-i="footnote"></p>
+</div>
+
+<script>
+  const I18N = {
+    "en": {
+      "locale": "en-US",
+      "html": "en",
+      "docTitle": "Viking Planner",
+      "eyebrow": "Kingshot · Viking Vengeance",
+      "title": "Viking <span>Planner</span>",
+      "sub": "Get every infantry and cavalry out of your city. Cavalry that doesn't fit in a march goes to a camp — have an ally attack it so they land in the infirmary.",
+      "s1": "Troops to protect",
+      "inf": "Infantry",
+      "cav": "Cavalry",
+      "eg": "e.g.",
+      "archNote": "Archers stay home and aren't part of the plan.",
+      "s2": "Infirmary size",
+      "marchQ": "How many marches can you send?",
+      "squadL": "Base squad deployment",
+      "squadNote": "Your normal troops per march, before Mighty Bison and boosts.",
+      "bisonL": "Mighty Bison skill",
+      "bisonOff": "Not used",
+      "bisonLv": "Level {n}",
+      "boostL": "Squad deployment boost",
+      "boostNone": "None",
+      "gems2k": "2,000 gems",
+      "gems20k": "20,000 gems",
+      "effL": "Squad deployment per march",
+      "infirmL": "Infirmary capacity",
+      "infirmNote": "Wounded troops it can hold.",
+      "s3": "Squad deployment",
+      "empty": "Enter your troops and squad deployment above to see the plan.",
+      "statSent": "Sent in marches",
+      "statInfirm": "Infirmary capacity",
+      "statRisk": "Over capacity",
+      "lgInf10": "Infantry T10",
+      "lgInf9": "Infantry T9",
+      "lgCav9": "Cavalry T9",
+      "lgCav10": "Cavalry T10",
+      "copy": "Copy plan for alliance chat",
+      "copied": "Copied ✓",
+      "copyManual": "Copy blocked here — select the text below and copy it",
+      "footnote": "Marches are filled with infantry first (T10 before T9), then cavalry (T9 before T10). Cavalry left home is shown as one total, since which tier gets hit is up to the attacker. Troops are spread evenly across marches.",
+      "marchName": "March {i}",
+      "homeName": "Camp → infirmary",
+      "riskName": "Over infirmary capacity",
+      "allOut": "All infantry and cavalry fit in your {n} marches — nothing stays home.",
+      "spare": " {room} spare room left in your marches.",
+      "cavHome": "<b>{n}</b> cavalry don't fit in your marches. Send them to a camp and ask an ally to attack it so they go to the infirmary (capacity <b>{cap}</b>) — you decide how many to send.",
+      "infHome": "<b>{n}</b> infantry don't fit in your marches and stay home.",
+      "infNote": " Infantry is always sent first, so every march is already full.",
+      "over": "<b>{n}</b> troops are over your infirmary capacity and can die. You need <b>+{per}</b> squad deployment per march, or <b>+{n}</b> infirmary capacity.",
+      "fitsInfirm": "Your infirmary ({cap}) can take all {used} leftover troops.",
+      "noInfirm": "Enter your infirmary capacity to check the troops left home.",
+      "waysH": "Ways to cover it:",
+      "wayBoost": "+{p}% boost ({gems} gems): {res}",
+      "wayBison": "Mighty Bison level {lv}: {res}",
+      "wayBisonMax": "Mighty Bison level 10: {res}",
+      "wayCombo": "+20% boost and Mighty Bison level {lv}: {res}",
+      "covers": "✓ covers everything",
+      "leaves": "still {n} over",
+      "copyHead": "Viking Vengeance — {n} marches of {cap}",
+      "copyHome": "Camp → infirmary",
+      "copyRisk": "Over infirmary capacity",
+      "s4": "Pet skill",
+      "s5": "Deployment buff",
+      "s6": "Your plan",
+      "needWait": "Enter your troops, infirmary and squad deployment to see what pet skill or buff you need.",
+      "needNone": "Your base squad deployment and infirmary already cover everything — no pet skill or buff needed.",
+      "needOver": "Without pet skill or buff, <b>{n}</b> troops would be over infirmary capacity. You need <b>+{per}</b> squad deployment per march (or <b>+{n}</b> infirmary).",
+      "needOpts": "Any one of these covers it:",
+      "optNone": "No buff",
+      "optBuff": "+{p}% buff ({gems} gems)",
+      "needLv": "Mighty Bison Lv {lv}",
+      "needLv0": "no pet skill needed",
+      "needMax": "not enough — still {n} over at Lv 10",
+      "s7": "Cavalry healing cost",
+      "bread": "Bread",
+      "wood": "Wood",
+      "stone": "Stone",
+      "iron": "Iron",
+      "healEmpty": "Your plan will show the estimated cost to heal the cavalry sent to the infirmary.",
+      "healNone": "No cavalry goes to the infirmary, so there is nothing to heal.",
+      "healIntro": "Estimate for the <b>{n}</b> cavalry in the infirmary, split by your cavalry ratio ({r10}% T10 / {r9}% T9): about <b>{a}</b> T10 and <b>{b}</b> T9. The real cost depends on how many of each tier end up in the infirmary.",
+      "copyHeal": "Cavalry heal cost (estimate)",
+      "dir": "ltr",
+      "healPer": "Per cavalry (bread / wood / stone / iron) — T10: {t10} · T9: {t9}",
+      "s8": "Summary",
+      "sumCopy": "Copy summary",
+      "sumEmpty": "Fill in the steps above to get a to-do summary.",
+      "sumHead": "Viking Vengeance — to-do",
+      "sumBison": "Turn on Mighty Bison Lv {lv} (+{add} per march)",
+      "sumBoost": "Use the +{p}% squad deployment buff ({gems} gems)",
+      "sumMarches": "Send {n} marches of {cap}:",
+      "sumEach": "each march: {line}",
+      "sumCamp": "Send {n} cavalry to a camp and ask an ally to attack it, so they go to the infirmary (capacity {cap})",
+      "sumAllOut": "Everything fits in your marches — nothing to send to a camp",
+      "sumInfHome": "Warning: {n} infantry don't fit and stay home",
+      "sumOver": "Warning: {n} troops are over infirmary capacity and can die — need +{per} squad deployment per march or +{n} infirmary",
+      "sumFix": "Fix: {w}",
+      "sumHeal": "Cavalry heal cost (estimate): {res}"
+    },
+    "fr": {
+      "locale": "fr-FR",
+      "html": "fr",
+      "docTitle": "Planificateur Vikings",
+      "eyebrow": "Kingshot · Vengeance des Vikings",
+      "title": "Planificateur <span>Vikings</span>",
+      "sub": "Faites sortir toute votre infanterie et cavalerie de la ville. La cavalerie qui ne tient pas dans une marche part dans un camp — demandez à un allié de l'attaquer pour qu'elle aille à l'infirmerie.",
+      "s1": "Troupes à protéger",
+      "inf": "Infanterie",
+      "cav": "Cavalerie",
+      "eg": "ex.",
+      "archNote": "Les archers restent en ville et ne font pas partie du plan.",
+      "s2": "Taille de l'infirmerie",
+      "marchQ": "Combien de marches pouvez-vous envoyer ?",
+      "squadL": "Déploiement d'escouade de base",
+      "squadNote": "Vos troupes normales par marche, avant Bison puissant et bonus.",
+      "bisonL": "Compétence Bison puissant",
+      "bisonOff": "Non utilisé",
+      "bisonLv": "Niveau {n}",
+      "boostL": "Bonus de déploiement",
+      "boostNone": "Aucun",
+      "gems2k": "2 000 gemmes",
+      "gems20k": "20 000 gemmes",
+      "effL": "Déploiement d'escouade par marche",
+      "infirmL": "Capacité de l'infirmerie",
+      "infirmNote": "Blessés pouvant être soignés.",
+      "s3": "Déploiement d'escouade",
+      "empty": "Saisissez vos troupes et le déploiement d'escouade ci-dessus pour voir le plan.",
+      "statSent": "Envoyées en marche",
+      "statInfirm": "Capacité de l'infirmerie",
+      "statRisk": "Au-delà de la capacité",
+      "lgInf10": "Infanterie T10",
+      "lgInf9": "Infanterie T9",
+      "lgCav9": "Cavalerie T9",
+      "lgCav10": "Cavalerie T10",
+      "copy": "Copier pour le chat d'alliance",
+      "copied": "Copié ✓",
+      "copyManual": "Copie bloquée ici — sélectionnez le texte ci-dessous et copiez-le",
+      "footnote": "Les marches sont remplies d'abord avec l'infanterie (T10 avant T9), puis la cavalerie (T9 avant T10). La cavalerie restée en ville est affichée en total, car le niveau touché dépend de l'attaquant. Les troupes sont réparties également entre les marches.",
+      "marchName": "Marche {i}",
+      "homeName": "Camp → infirmerie",
+      "riskName": "Au-delà de l'infirmerie",
+      "allOut": "Toute votre infanterie et cavalerie tient dans vos {n} marches — rien ne reste en ville.",
+      "spare": " Il reste {room} places libres dans vos marches.",
+      "cavHome": "<b>{n}</b> cavaliers ne tiennent pas dans vos marches. Envoyez-les dans un camp et demandez à un allié de l'attaquer pour qu'ils partent à l'infirmerie (capacité <b>{cap}</b>) — à vous de choisir combien en envoyer.",
+      "infHome": "<b>{n}</b> fantassins ne tiennent pas dans vos marches et restent en ville.",
+      "infNote": " L'infanterie part toujours en premier, donc chaque marche est déjà pleine.",
+      "over": "<b>{n}</b> troupes dépassent la capacité de votre infirmerie et peuvent mourir. Il faut <b>+{per}</b> de déploiement par marche, ou <b>+{n}</b> de capacité d'infirmerie.",
+      "fitsInfirm": "Votre infirmerie ({cap}) peut accueillir les {used} troupes restantes.",
+      "noInfirm": "Saisissez la capacité de l'infirmerie pour vérifier les troupes restées en ville.",
+      "waysH": "Pour y remédier :",
+      "wayBoost": "Bonus +{p}% ({gems} gemmes) : {res}",
+      "wayBison": "Bison puissant niveau {lv} : {res}",
+      "wayBisonMax": "Bison puissant niveau 10 : {res}",
+      "wayCombo": "Bonus +20% et Bison puissant niveau {lv} : {res}",
+      "covers": "✓ couvre tout",
+      "leaves": "encore {n} en trop",
+      "copyHead": "Vengeance des Vikings — {n} marches de {cap}",
+      "copyHome": "Camp → infirmerie",
+      "copyRisk": "Au-delà de l'infirmerie",
+      "s4": "Compétence de familier",
+      "s5": "Bonus de déploiement",
+      "s6": "Votre plan",
+      "needWait": "Saisissez vos troupes, l'infirmerie et le déploiement d'escouade pour voir la compétence de familier ou le bonus nécessaire.",
+      "needNone": "Votre déploiement de base et votre infirmerie couvrent déjà tout — aucune compétence de familier ni bonus nécessaire.",
+      "needOver": "Sans familier ni bonus, <b>{n}</b> troupes dépasseraient la capacité de l'infirmerie. Il faut <b>+{per}</b> de déploiement par marche (ou <b>+{n}</b> d'infirmerie).",
+      "needOpts": "Une seule de ces options suffit :",
+      "optNone": "Sans bonus",
+      "optBuff": "Bonus +{p}% ({gems} gemmes)",
+      "needLv": "Bison puissant niv. {lv}",
+      "needLv0": "aucun familier nécessaire",
+      "needMax": "insuffisant — encore {n} en trop au niv. 10",
+      "s7": "Coût des soins de la cavalerie",
+      "bread": "Pain",
+      "wood": "Bois",
+      "stone": "Pierre",
+      "iron": "Fer",
+      "healEmpty": "Votre plan affichera le coût estimé pour soigner la cavalerie envoyée à l'infirmerie.",
+      "healNone": "Aucun cavalier ne part à l'infirmerie, donc rien à soigner.",
+      "healIntro": "Estimation pour les <b>{n}</b> cavaliers à l'infirmerie, répartis selon votre ratio de cavalerie ({r10}% T10 / {r9}% T9) : environ <b>{a}</b> T10 et <b>{b}</b> T9. Le coût réel dépend du nombre de chaque niveau qui arrive à l'infirmerie.",
+      "copyHeal": "Soins cavalerie (estimation)",
+      "dir": "ltr",
+      "healPer": "Par cavalier (pain / bois / pierre / fer) — T10 : {t10} · T9 : {t9}",
+      "s8": "Résumé",
+      "sumCopy": "Copier le résumé",
+      "sumEmpty": "Remplissez les étapes ci-dessus pour obtenir un résumé des actions.",
+      "sumHead": "Vengeance des Vikings — à faire",
+      "sumBison": "Activer Bison puissant niv. {lv} (+{add} par marche)",
+      "sumBoost": "Utiliser le bonus de déploiement +{p}% ({gems} gemmes)",
+      "sumMarches": "Envoyer {n} marches de {cap} :",
+      "sumEach": "chaque marche : {line}",
+      "sumCamp": "Envoyer {n} cavaliers dans un camp et demander à un allié de l'attaquer pour qu'ils aillent à l'infirmerie (capacité {cap})",
+      "sumAllOut": "Tout tient dans vos marches — rien à envoyer au camp",
+      "sumInfHome": "Attention : {n} fantassins ne tiennent pas et restent en ville",
+      "sumOver": "Attention : {n} troupes dépassent la capacité de l'infirmerie et peuvent mourir — il faut +{per} de déploiement par marche ou +{n} d'infirmerie",
+      "sumFix": "Solution : {w}",
+      "sumHeal": "Soins cavalerie (estimation) : {res}"
+    },
+    "es": {
+      "locale": "es-ES",
+      "html": "es",
+      "docTitle": "Planificador Vikingos",
+      "eyebrow": "Kingshot · Venganza vikinga",
+      "title": "Planificador <span>Vikingos</span>",
+      "sub": "Saca de tu ciudad toda tu infantería y caballería. La caballería que no quepa en una marcha va a un campamento — pide a un aliado que lo ataque para que vaya a la enfermería.",
+      "s1": "Tropas a proteger",
+      "inf": "Infantería",
+      "cav": "Caballería",
+      "eg": "ej.",
+      "archNote": "Los arqueros se quedan en casa y no forman parte del plan.",
+      "s2": "Tamaño de la enfermería",
+      "marchQ": "¿Cuántas marchas puedes enviar?",
+      "squadL": "Despliegue base de escuadrón",
+      "squadNote": "Tus tropas normales por marcha, antes del Bisonte poderoso y los bonus.",
+      "bisonL": "Habilidad Bisonte poderoso",
+      "bisonOff": "Sin usar",
+      "bisonLv": "Nivel {n}",
+      "boostL": "Bonus de despliegue",
+      "boostNone": "Ninguno",
+      "gems2k": "2.000 gemas",
+      "gems20k": "20.000 gemas",
+      "effL": "Despliegue de escuadrón por marcha",
+      "infirmL": "Capacidad de la enfermería",
+      "infirmNote": "Heridos que puede atender.",
+      "s3": "Despliegue de escuadrón",
+      "empty": "Introduce tus tropas y el despliegue de escuadrón arriba para ver el plan.",
+      "statSent": "Enviadas en marchas",
+      "statInfirm": "Capacidad de la enfermería",
+      "statRisk": "Sobre la capacidad",
+      "lgInf10": "Infantería T10",
+      "lgInf9": "Infantería T9",
+      "lgCav9": "Caballería T9",
+      "lgCav10": "Caballería T10",
+      "copy": "Copiar para el chat de alianza",
+      "copied": "Copiado ✓",
+      "copyManual": "Copia bloqueada aquí — selecciona el texto de abajo y cópialo",
+      "footnote": "Las marchas se llenan primero con infantería (T10 antes que T9) y luego con caballería (T9 antes que T10). La caballería que queda en casa se muestra como un total, porque qué nivel recibe el golpe depende del atacante. Las tropas se reparten por igual entre las marchas.",
+      "marchName": "Marcha {i}",
+      "homeName": "Campamento → enfermería",
+      "riskName": "Sobre la capacidad de la enfermería",
+      "allOut": "Toda tu infantería y caballería cabe en tus {n} marchas — no queda nada en casa.",
+      "spare": " Quedan {room} plazas libres en tus marchas.",
+      "cavHome": "<b>{n}</b> de caballería no caben en tus marchas. Envíalos a un campamento y pide a un aliado que lo ataque para que vayan a la enfermería (capacidad <b>{cap}</b>) — tú decides cuántos enviar.",
+      "infHome": "<b>{n}</b> de infantería no caben en tus marchas y se quedan en casa.",
+      "infNote": " La infantería siempre sale primero, así que todas las marchas ya están llenas.",
+      "over": "<b>{n}</b> tropas superan la capacidad de tu enfermería y pueden morir. Necesitas <b>+{per}</b> de despliegue por marcha, o <b>+{n}</b> de capacidad de enfermería.",
+      "fitsInfirm": "Tu enfermería ({cap}) puede recibir las {used} tropas restantes.",
+      "noInfirm": "Introduce la capacidad de la enfermería para comprobar las tropas que quedan en casa.",
+      "waysH": "Formas de cubrirlo:",
+      "wayBoost": "Bonus +{p}% ({gems} gemas): {res}",
+      "wayBison": "Bisonte poderoso nivel {lv}: {res}",
+      "wayBisonMax": "Bisonte poderoso nivel 10: {res}",
+      "wayCombo": "Bonus +20% y Bisonte poderoso nivel {lv}: {res}",
+      "covers": "✓ lo cubre todo",
+      "leaves": "aún sobran {n}",
+      "copyHead": "Venganza vikinga — {n} marchas de {cap}",
+      "copyHome": "Campamento → enfermería",
+      "copyRisk": "Sobre la capacidad de la enfermería",
+      "s4": "Habilidad de mascota",
+      "s5": "Bonus de despliegue",
+      "s6": "Tu plan",
+      "needWait": "Introduce tus tropas, la enfermería y el despliegue de escuadrón para ver qué habilidad de mascota o bonus necesitas.",
+      "needNone": "Tu despliegue base y tu enfermería ya lo cubren todo — no necesitas habilidad de mascota ni bonus.",
+      "needOver": "Sin mascota ni bonus, <b>{n}</b> tropas superarían la capacidad de la enfermería. Necesitas <b>+{per}</b> de despliegue por marcha (o <b>+{n}</b> de enfermería).",
+      "needOpts": "Cualquiera de estas opciones lo cubre:",
+      "optNone": "Sin bonus",
+      "optBuff": "Bonus +{p}% ({gems} gemas)",
+      "needLv": "Bisonte poderoso nv. {lv}",
+      "needLv0": "no necesitas mascota",
+      "needMax": "no alcanza — aún sobran {n} en nv. 10",
+      "s7": "Coste de curar la caballería",
+      "bread": "Pan",
+      "wood": "Madera",
+      "stone": "Piedra",
+      "iron": "Hierro",
+      "healEmpty": "Tu plan mostrará el coste estimado de curar la caballería enviada a la enfermería.",
+      "healNone": "No va caballería a la enfermería, así que no hay nada que curar.",
+      "healIntro": "Estimación para los <b>{n}</b> de caballería en la enfermería, repartidos según tu proporción de caballería ({r10}% T10 / {r9}% T9): unos <b>{a}</b> T10 y <b>{b}</b> T9. El coste real depende de cuántos de cada nivel acaben en la enfermería.",
+      "copyHeal": "Curación de caballería (estimación)",
+      "dir": "ltr",
+      "healPer": "Por unidad de caballería (pan / madera / piedra / hierro) — T10: {t10} · T9: {t9}",
+      "s8": "Resumen",
+      "sumCopy": "Copiar resumen",
+      "sumEmpty": "Completa los pasos de arriba para obtener un resumen de tareas.",
+      "sumHead": "Venganza vikinga — tareas",
+      "sumBison": "Activa Bisonte poderoso nv. {lv} (+{add} por marcha)",
+      "sumBoost": "Usa el bonus de despliegue +{p}% ({gems} gemas)",
+      "sumMarches": "Envía {n} marchas de {cap}:",
+      "sumEach": "cada marcha: {line}",
+      "sumCamp": "Envía {n} de caballería a un campamento y pide a un aliado que lo ataque para que vayan a la enfermería (capacidad {cap})",
+      "sumAllOut": "Todo cabe en tus marchas — no hay que enviar nada al campamento",
+      "sumInfHome": "Aviso: {n} de infantería no caben y se quedan en casa",
+      "sumOver": "Aviso: {n} tropas superan la capacidad de la enfermería y pueden morir — necesitas +{per} de despliegue por marcha o +{n} de enfermería",
+      "sumFix": "Solución: {w}",
+      "sumHeal": "Curación de caballería (estimación): {res}"
+    },
+    "pt": {
+      "locale": "pt-BR",
+      "html": "pt",
+      "docTitle": "Planejador Vikings",
+      "eyebrow": "Kingshot · Vingança Viking",
+      "title": "Planejador <span>Vikings</span>",
+      "sub": "Tire toda a sua infantaria e cavalaria da cidade. A cavalaria que não couber em uma marcha vai para um acampamento — peça a um aliado para atacá-lo e ela vai para a enfermaria.",
+      "s1": "Tropas a proteger",
+      "inf": "Infantaria",
+      "cav": "Cavalaria",
+      "eg": "ex.",
+      "archNote": "Os arqueiros ficam em casa e não entram no plano.",
+      "s2": "Tamanho da enfermaria",
+      "marchQ": "Quantas marchas você pode enviar?",
+      "squadL": "Implantação base do esquadrão",
+      "squadNote": "Suas tropas normais por marcha, antes do Bisão poderoso e dos bônus.",
+      "bisonL": "Habilidade Bisão poderoso",
+      "bisonOff": "Não usado",
+      "bisonLv": "Nível {n}",
+      "boostL": "Bônus de implantação",
+      "boostNone": "Nenhum",
+      "gems2k": "2.000 gemas",
+      "gems20k": "20.000 gemas",
+      "effL": "Implantação do esquadrão por marcha",
+      "infirmL": "Capacidade da enfermaria",
+      "infirmNote": "Feridos que ela consegue receber.",
+      "s3": "Implantação do esquadrão",
+      "empty": "Informe suas tropas e a implantação do esquadrão acima para ver o plano.",
+      "statSent": "Enviadas em marchas",
+      "statInfirm": "Capacidade da enfermaria",
+      "statRisk": "Acima da capacidade",
+      "lgInf10": "Infantaria T10",
+      "lgInf9": "Infantaria T9",
+      "lgCav9": "Cavalaria T9",
+      "lgCav10": "Cavalaria T10",
+      "copy": "Copiar para o chat da aliança",
+      "copied": "Copiado ✓",
+      "copyManual": "Cópia bloqueada aqui — selecione o texto abaixo e copie",
+      "footnote": "As marchas são preenchidas primeiro com infantaria (T10 antes de T9) e depois com cavalaria (T9 antes de T10). A cavalaria que fica em casa aparece como um total, porque o nível atingido depende do atacante. As tropas são divididas igualmente entre as marchas.",
+      "marchName": "Marcha {i}",
+      "homeName": "Acampamento → enfermaria",
+      "riskName": "Acima da capacidade da enfermaria",
+      "allOut": "Toda a sua infantaria e cavalaria cabe nas suas {n} marchas — nada fica em casa.",
+      "spare": " Sobram {room} vagas nas suas marchas.",
+      "cavHome": "<b>{n}</b> de cavalaria não cabem nas suas marchas. Envie-as para um acampamento e peça a um aliado para atacá-lo, assim vão para a enfermaria (capacidade <b>{cap}</b>) — você decide quantas enviar.",
+      "infHome": "<b>{n}</b> de infantaria não cabem nas suas marchas e ficam em casa.",
+      "infNote": " A infantaria sempre sai primeiro, então todas as marchas já estão cheias.",
+      "over": "<b>{n}</b> tropas passam da capacidade da sua enfermaria e podem morrer. Você precisa de <b>+{per}</b> de implantação por marcha, ou <b>+{n}</b> de capacidade de enfermaria.",
+      "fitsInfirm": "Sua enfermaria ({cap}) comporta as {used} tropas restantes.",
+      "noInfirm": "Informe a capacidade da enfermaria para verificar as tropas que ficam em casa.",
+      "waysH": "Formas de resolver:",
+      "wayBoost": "Bônus +{p}% ({gems} gemas): {res}",
+      "wayBison": "Bisão poderoso nível {lv}: {res}",
+      "wayBisonMax": "Bisão poderoso nível 10: {res}",
+      "wayCombo": "Bônus +20% e Bisão poderoso nível {lv}: {res}",
+      "covers": "✓ cobre tudo",
+      "leaves": "ainda sobram {n}",
+      "copyHead": "Vingança Viking — {n} marchas de {cap}",
+      "copyHome": "Acampamento → enfermaria",
+      "copyRisk": "Acima da capacidade da enfermaria",
+      "s4": "Habilidade do mascote",
+      "s5": "Bônus de implantação",
+      "s6": "Seu plano",
+      "needWait": "Informe suas tropas, a enfermaria e a implantação do esquadrão para ver qual habilidade de mascote ou bônus você precisa.",
+      "needNone": "Sua implantação base e sua enfermaria já cobrem tudo — não precisa de habilidade de mascote nem bônus.",
+      "needOver": "Sem mascote nem bônus, <b>{n}</b> tropas passariam da capacidade da enfermaria. Você precisa de <b>+{per}</b> de implantação por marcha (ou <b>+{n}</b> de enfermaria).",
+      "needOpts": "Qualquer uma destas opções resolve:",
+      "optNone": "Sem bônus",
+      "optBuff": "Bônus +{p}% ({gems} gemas)",
+      "needLv": "Bisão poderoso nv. {lv}",
+      "needLv0": "sem mascote",
+      "needMax": "não basta — ainda sobram {n} no nv. 10",
+      "s7": "Custo de cura da cavalaria",
+      "bread": "Pão",
+      "wood": "Madeira",
+      "stone": "Pedra",
+      "iron": "Ferro",
+      "healEmpty": "Seu plano vai mostrar o custo estimado para curar a cavalaria enviada à enfermaria.",
+      "healNone": "Nenhuma cavalaria vai para a enfermaria, então não há nada para curar.",
+      "healIntro": "Estimativa para as <b>{n}</b> unidades de cavalaria na enfermaria, divididas pela sua proporção de cavalaria ({r10}% T10 / {r9}% T9): cerca de <b>{a}</b> T10 e <b>{b}</b> T9. O custo real depende de quantas de cada nível chegarem à enfermaria.",
+      "copyHeal": "Cura da cavalaria (estimativa)",
+      "dir": "ltr",
+      "healPer": "Por cavalaria (pão / madeira / pedra / ferro) — T10: {t10} · T9: {t9}",
+      "s8": "Resumo",
+      "sumCopy": "Copiar resumo",
+      "sumEmpty": "Preencha as etapas acima para gerar um resumo do que fazer.",
+      "sumHead": "Vingança Viking — o que fazer",
+      "sumBison": "Ative Bisão poderoso nv. {lv} (+{add} por marcha)",
+      "sumBoost": "Use o bônus de implantação +{p}% ({gems} gemas)",
+      "sumMarches": "Envie {n} marchas de {cap}:",
+      "sumEach": "cada marcha: {line}",
+      "sumCamp": "Envie {n} de cavalaria para um acampamento e peça a um aliado para atacá-lo, assim vão para a enfermaria (capacidade {cap})",
+      "sumAllOut": "Tudo cabe nas suas marchas — nada para enviar ao acampamento",
+      "sumInfHome": "Atenção: {n} de infantaria não cabem e ficam em casa",
+      "sumOver": "Atenção: {n} tropas passam da capacidade da enfermaria e podem morrer — precisa de +{per} de implantação por marcha ou +{n} de enfermaria",
+      "sumFix": "Solução: {w}",
+      "sumHeal": "Cura da cavalaria (estimativa): {res}"
+    },
+    "zh-Hans": {
+      "locale": "zh-CN",
+      "html": "zh-Hans",
+      "dir": "ltr",
+      "docTitle": "维京规划器",
+      "eyebrow": "Kingshot · 维京复仇",
+      "title": "维京<span>规划器</span>",
+      "sub": "把所有步兵和骑兵带出城。装不进行军队列的骑兵放到营地——请盟友攻击营地，让他们进入医院。",
+      "s1": "需要保护的部队",
+      "inf": "步兵",
+      "cav": "骑兵",
+      "eg": "例如",
+      "archNote": "弓兵留在城内，不在计划之内。",
+      "s2": "医院容量",
+      "marchQ": "你可以派出几支队伍？",
+      "squadL": "基础出征人数",
+      "squadNote": "每支队伍的正常兵力，不含强力野牛和增益。",
+      "bisonL": "强力野牛技能",
+      "bisonOff": "未使用",
+      "bisonLv": "{n} 级",
+      "boostL": "出征人数增益",
+      "boostNone": "无",
+      "gems2k": "2,000 宝石",
+      "gems20k": "20,000 宝石",
+      "effL": "每支队伍出征人数",
+      "infirmL": "医院容量",
+      "infirmNote": "可容纳的伤兵数量。",
+      "s3": "出征人数",
+      "empty": "在上方输入部队数量和出征人数即可查看计划。",
+      "statSent": "已派出",
+      "statInfirm": "医院容量",
+      "statRisk": "超出容量",
+      "lgInf10": "步兵 T10",
+      "lgInf9": "步兵 T9",
+      "lgCav9": "骑兵 T9",
+      "lgCav10": "骑兵 T10",
+      "copy": "复制计划到联盟聊天",
+      "copied": "已复制 ✓",
+      "copyManual": "此处无法复制——请选中下方文字手动复制",
+      "footnote": "队伍先填步兵（T10 优先于 T9），再填骑兵（T9 优先于 T10）。留在城内的骑兵显示为总数，因为被打到哪个等级由攻击方决定。部队平均分配到各队伍。",
+      "marchName": "第 {i} 队",
+      "homeName": "营地 → 医院",
+      "riskName": "超出医院容量",
+      "allOut": "所有步兵和骑兵都能装进你的 {n} 支队伍——无人留守。",
+      "spare": " 队伍中还有 {room} 空位。",
+      "cavHome": "有 <b>{n}</b> 骑兵装不进队伍。把他们放到营地，请盟友攻击，让他们进入医院（容量 <b>{cap}</b>）——派多少由你决定。",
+      "infHome": "有 <b>{n}</b> 步兵装不进队伍，只能留在城内。",
+      "infNote": " 步兵总是优先派出，所以每支队伍都已满员。",
+      "over": "有 <b>{n}</b> 部队超出医院容量，可能阵亡。你需要每队 <b>+{per}</b> 出征人数，或 <b>+{n}</b> 医院容量。",
+      "fitsInfirm": "你的医院（{cap}）可以容纳剩余的全部 {used} 部队。",
+      "noInfirm": "输入医院容量以检查留在城内的部队。",
+      "waysH": "解决办法：",
+      "wayBoost": "+{p}% 增益（{gems} 宝石）：{res}",
+      "wayBison": "强力野牛 {lv} 级：{res}",
+      "wayBisonMax": "强力野牛 10 级：{res}",
+      "wayCombo": "+20% 增益加强力野牛 {lv} 级：{res}",
+      "covers": "✓ 全部覆盖",
+      "leaves": "仍超出 {n}",
+      "copyHead": "维京复仇 — {n} 支队伍，每队 {cap}",
+      "copyHome": "营地 → 医院",
+      "copyRisk": "超出医院容量",
+      "s4": "宠物技能",
+      "s5": "出征增益",
+      "s6": "你的计划",
+      "needWait": "输入部队、医院容量和出征人数，即可查看需要的宠物技能或增益。",
+      "needNone": "你的基础出征人数和医院容量已足够——无需宠物技能或增益。",
+      "needOver": "不使用宠物技能或增益时，有 <b>{n}</b> 部队会超出医院容量。你需要每队 <b>+{per}</b> 出征人数（或 <b>+{n}</b> 医院容量）。",
+      "needOpts": "以下任一方案即可：",
+      "optNone": "无增益",
+      "optBuff": "+{p}% 增益（{gems} 宝石）",
+      "needLv": "强力野牛 {lv} 级",
+      "needLv0": "无需宠物技能",
+      "needMax": "不够——10 级时仍超出 {n}",
+      "s7": "骑兵治疗费用",
+      "bread": "面包",
+      "wood": "木材",
+      "stone": "石头",
+      "iron": "铁矿",
+      "healEmpty": "计划会显示治疗送入医院的骑兵的预估费用。",
+      "healNone": "没有骑兵进入医院，无需治疗。",
+      "healIntro": "按你的骑兵比例（{r10}% T10 / {r9}% T9）估算医院中 <b>{n}</b> 骑兵的费用：约 <b>{a}</b> T10 和 <b>{b}</b> T9。实际费用取决于每个等级各有多少进入医院。",
+      "healPer": "每个骑兵（面包 / 木材 / 石头 / 铁矿）— T10：{t10} · T9：{t9}",
+      "copyHeal": "骑兵治疗费用（估算）",
+      "s8": "总结",
+      "sumCopy": "复制总结",
+      "sumEmpty": "完成上方步骤即可生成待办总结。",
+      "sumHead": "维京复仇 — 待办事项",
+      "sumBison": "开启强力野牛 {lv} 级（每队 +{add}）",
+      "sumBoost": "使用 +{p}% 出征人数增益（{gems} 宝石）",
+      "sumMarches": "派出 {n} 支队伍，每队 {cap}：",
+      "sumEach": "每队：{line}",
+      "sumCamp": "把 {n} 骑兵放到营地，请盟友攻击，让他们进入医院（容量 {cap}）",
+      "sumAllOut": "全部部队都能装进队伍——无需放到营地",
+      "sumInfHome": "注意：{n} 步兵装不下，只能留在城内",
+      "sumOver": "注意：{n} 部队超出医院容量，可能阵亡——需要每队 +{per} 出征人数或 +{n} 医院容量",
+      "sumFix": "解决办法：{w}",
+      "sumHeal": "骑兵治疗费用（估算）：{res}"
+    }
+  };
+
+  let lang = (() => {
+    try { const s = localStorage.getItem('vkp-lang'); if (I18N[s]) return s; } catch (e) {}
+    const full = (navigator.language || 'en').toLowerCase(), n = full.slice(0, 2);
+    if (n === 'zh') return 'zh-Hans';
+    return I18N[n] ? n : 'en';
+  })();
+  const L = () => I18N[lang];
+  const T = (k, v = {}) => (L()[k] ?? I18N.en[k]).replace(/\{(\w+)\}/g, (_, x) => v[x] ?? '');
+  const $ = id => document.getElementById(id);
+  const fmt = n => Math.round(n).toLocaleString(L().locale);
+  const num = id => Math.max(0, Math.floor(parseFloat($(id).value) || 0));
+
+  function applyLang(){
+    document.documentElement.lang = L().html;
+    document.documentElement.dir = L().dir;
+    document.title = L().docTitle;
+    document.querySelectorAll('[data-i]').forEach(el => el.innerHTML = T(el.dataset.i));
+    document.querySelectorAll('[data-ph]').forEach(el => el.placeholder = `${T('eg')} ${Number(el.dataset.ph).toLocaleString(L().locale)}`);
+    document.querySelectorAll('[data-lang]').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+  }
+  document.querySelectorAll('[data-lang]').forEach(b => b.onclick = () => {
+    lang = b.dataset.lang;
+    try { localStorage.setItem('vkp-lang', lang); } catch (e) {}
+    applyLang(); update();
+  });
+
+  const state = { marches:5, boost:0 };
+  function group(attr, fn){
+    document.querySelectorAll(`[data-${attr}]`).forEach(el => el.onclick = () => {
+      document.querySelectorAll(`[data-${attr}]`).forEach(p => p.classList.toggle('active', p === el));
+      fn(el.dataset[attr]); update();
+    });
+  }
+  group('marches', v => state.marches = +v);
+  group('boost', v => state.boost = +v);
+  ['infT10','infT9','cavT10','cavT9','squad','infirm','bison'].forEach(id => $(id).addEventListener('input', update));
+
+  // Mighty Bison: +1,500 squad deployment per skill level (Lv1 1,500 … Lv10 15,000).
+  const BISON_PER_LV = 1500;
+  const GEMS = { 10:'2,000', 20:'20,000' };
+  // Boost % applies to base deployment; Bison is a flat bonus on top.
+  const effCap = (base, lv, boost) => Math.floor(base * (1 + boost / 100)) + lv * BISON_PER_LV;
+
+  // Send priority: infantry T10, infantry T9, then cavalry T9, cavalry T10.
+  const KEYS = ['i10','i9','c9','c10'];
+  const COLOR = { i10:'b-inf', i9:'b-inf9', c9:'b-cav9', c10:'b-cav' };
+
+  // Fill march space in priority order; return what's sent and what stays home.
+  function allocate(t, cap, n){
+    let space = cap * n;
+    const sent = {}, home = {};
+    for (const k of KEYS){ sent[k] = Math.min(t[k], space); space -= sent[k]; home[k] = t[k] - sent[k]; }
+    return { sent, home, space };
+  }
+  const overFor = (t, cap, n, infirm) => { const { home } = allocate(t, cap, n); return Math.max(0, home.i10 + home.i9 + home.c9 + home.c10 - infirm); };
+
+  // Spread each type evenly across n marches, never over cap.
+  function spread(sent, n, cap){
+    const marches = Array.from({ length:n }, () => ({ i10:0, i9:0, c9:0, c10:0 }));
+    const room = () => marches.map(m => cap - KEYS.reduce((s, k) => s + m[k], 0));
+    for (const k of KEYS){
+      let left = sent[k];
+      while (left > 0){
+        const open = room().map((x, i) => [x, i]).filter(([x]) => x > 0);
+        if (!open.length) break;
+        const share = Math.max(1, Math.floor(left / open.length));
+        for (const [x, i] of open){
+          const give = Math.min(share, x, left);
+          marches[i][k] += give; left -= give;
+          if (!left) break;
+        }
+      }
+    }
+    return marches;
+  }
+
+  // What pet skill / buff is needed, judged from base deployment alone (ignores current picks).
+  function renderNeeds(t, base, n, infirm, ready){
+    const box = $('needs');
+    if (!ready){ box.innerHTML = `<div class="wait">${T('needWait')}</div>`; return; }
+    const over0 = overFor(t, effCap(base, 0, 0), n, infirm);
+    if (!over0){ box.innerHTML = `<div class="msg ok">${T('needNone')}</div>`; return; }
+    const items = [0, 10, 20].map(p => {
+      const label = p ? T('optBuff', {p, gems:fmt(+GEMS[p].replace(/,/g, ''))}) : T('optNone');
+      let lv = null;
+      for (let l = 0; l <= 10; l++) if (!overFor(t, effCap(base, l, p), n, infirm)){ lv = l; break; }
+      if (lv === 0) return `<li>${label} → <b>${T('needLv0')}</b></li>`;
+      if (lv !== null) return `<li>${label} + <b>${T('needLv', {lv})}</b></li>`;
+      return `<li class="miss">${label} + ${T('needLv', {lv:10})} → ${T('needMax', {n:fmt(overFor(t, effCap(base, 10, p), n, infirm))})}</li>`;
+    });
+    box.innerHTML = `<div class="msg warn">${T('needOver', {n:fmt(over0), per:fmt(Math.ceil(over0 / n))})}<br>${T('needOpts')}<ul>${items.join('')}</ul></div>`;
+  }
+
+  // Cavalry heal cost per troop (from the game).
+  const RES = ['bread','wood','stone','iron'];
+  const HEAL = { c10:{bread:244, wood:230, stone:47, iron:11}, c9:{bread:122, wood:115, stone:24, iron:6} };
+  // Short form for big numbers: 12.3M, 450K.
+  const short = v => v >= 1e9 ? (v / 1e9).toFixed(2).replace(/\.?0+$/, '') + 'B' : v >= 1e6 ? (v / 1e6).toFixed(1).replace(/\.0$/, '') + 'M' : v >= 1e4 ? Math.round(v / 1e3) + 'K' : fmt(v);
+
+  // Copy text to clipboard; if blocked (e.g. inside a preview frame), show it so it can be copied by hand.
+  function bindCopy(btnId, boxId, labelKey, text){
+    const btn = $(btnId), box = $(boxId);
+    box.hidden = true;
+    btn.onclick = () => {
+      const done = () => { box.hidden = true; btn.textContent = T('copied'); setTimeout(() => btn.textContent = T(labelKey), 1500); };
+      const fail = () => { box.value = text; box.rows = text.split('\n').length; box.hidden = false; box.focus(); box.select(); btn.textContent = T('copyManual'); };
+      let ok = false;
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = text; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+        document.body.appendChild(ta); ta.select(); ok = document.execCommand('copy'); ta.remove();
+      } catch (e) {}
+      if (ok) return done();
+      if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, fail);
+      else fail();
+    };
+  }
+
+  function update(){
+    const t = { i10:num('infT10'), i9:num('infT9'), c9:num('cavT9'), c10:num('cavT10') };
+    const baseRaw = num('squad');
+    const base = Math.max(1, baseRaw);
+    const lv = num('bison');
+    const cap = effCap(base, lv, state.boost);
+    const infirmRaw = $('infirm').value.trim();
+    const infirm = num('infirm');
+    const n = state.marches;
+    const total = t.i10 + t.i9 + t.c9 + t.c10;
+
+    $('bisonLv').textContent = lv ? T('bisonLv', {n:lv}) : T('bisonOff');
+    $('bisonAdd').textContent = `+${fmt(lv * BISON_PER_LV)}`;
+    $('effVal').textContent = fmt(cap);
+
+    renderNeeds(t, baseRaw, n, infirm, total && baseRaw && $('infirm').value.trim() !== '');
+
+    $('empty').textContent = T('empty');
+    if (!total || !baseRaw){ $('empty').style.display = 'block'; $('results').style.display = 'none'; $('healOut').innerHTML = `<div class="empty">${T('healEmpty')}</div>`; $('sumEmpty').textContent = T('sumEmpty'); $('sumEmpty').style.display = 'block'; $('sumWrap').style.display = 'none'; return; }
+    $('empty').style.display = 'none';
+
+    const { sent, home, space } = allocate(t, cap, n);
+    const marches = spread(sent, n, cap);
+    const sentTotal = sent.i10 + sent.i9 + sent.c9 + sent.c10;
+    const homeInf = home.i10 + home.i9, homeCav = home.c9 + home.c10, homeTotal = homeInf + homeCav;
+    const toInfirm = Math.min(homeTotal, infirm);
+    const over = homeTotal - toInfirm;
+
+    const msgs = [], ways = [];
+    if (!homeTotal){
+      msgs.push(`<div class="msg ok">${T('allOut', {n})}${space > 0 ? T('spare', {room:fmt(space)}) : ''}</div>`);
+    } else {
+      if (homeInf) msgs.push(`<div class="msg warn">${T('infHome', {n:fmt(homeInf)})}${T('infNote')}</div>`);
+      if (homeCav) msgs.push(`<div class="msg ok">${T('cavHome', {n:fmt(homeCav), cap:infirmRaw ? fmt(infirm) : '–'})}</div>`);
+      if (!infirmRaw) msgs.push(`<div class="msg warn">${T('noInfirm')}</div>`);
+      else if (over){
+        const res = o => o ? T('leaves', {n:fmt(o)}) : T('covers');
+        ways.length = 0;
+        [10, 20].filter(p => p > state.boost).forEach(p =>
+          ways.push(T('wayBoost', {p, gems:fmt(+GEMS[p].replace(/,/g, '')), res:res(overFor(t, effCap(base, lv, p), n, infirm))})));
+        if (lv < 10){
+          let need = null;
+          for (let l = lv + 1; l <= 10; l++) if (!overFor(t, effCap(base, l, state.boost), n, infirm)){ need = l; break; }
+          ways.push(need ? T('wayBison', {lv:need, res:T('covers')})
+                         : T('wayBisonMax', {res:res(overFor(t, effCap(base, 10, state.boost), n, infirm))}));
+        }
+        // If nothing above covers it alone, try +20% together with Bison.
+        if (!ways.some(w => w.includes(T('covers'))) && (state.boost < 20 || lv < 10)){
+          let combo = null;
+          for (let l = lv; l <= 10; l++) if (!overFor(t, effCap(base, l, 20), n, infirm)){ combo = l; break; }
+          ways.push(combo !== null ? T('wayCombo', {lv:combo, res:T('covers')})
+                                   : T('wayCombo', {lv:10, res:res(overFor(t, effCap(base, 10, 20), n, infirm))}));
+        }
+        const waysHtml = ways.length ? `<br>${T('waysH')}<ul style="margin:6px 0 0; padding-left:18px;">${ways.map(w => `<li>${w}</li>`).join('')}</ul>` : '';
+        msgs.push(`<div class="msg warn">${T('over', {n:fmt(over), per:fmt(Math.ceil(over / n))})}${waysHtml}</div>`);
+      }
+      else msgs.push(`<div class="msg ok">${T('fitsInfirm', {used:fmt(toInfirm), cap:fmt(infirm)})}</div>`);
+    }
+    $('status').innerHTML = msgs.join('');
+
+    $('sSent').textContent = fmt(sentTotal);
+    $('sInfirm').textContent = infirmRaw ? fmt(infirm) : '–';
+    $('sRisk').textContent = fmt(over);
+    $('sRisk').style.color = over ? '#e0968a' : '';
+
+    // Marches show each tier; home/infirmary show cavalry as one total.
+    const card = (name, x, c, cls, unified) => {
+      const tot = KEYS.reduce((s, k) => s + x[k], 0);
+      const cav = unified ? `<span>${T('cav')} <b>${fmt(x.c9 + x.c10)}</b></span>`
+                          : `<span>${T('cav')} T10 <b>${fmt(x.c10)}</b> · T9 <b>${fmt(x.c9)}</b></span>`;
+      const inf = (x.i10 + x.i9 || !unified) ? `<span>${T('inf')} T10 <b>${fmt(x.i10)}</b> · T9 <b>${fmt(x.i9)}</b></span>` : '';
+      const segs = unified ? [['b-inf', x.i10], ['b-inf9', x.i9], ['b-cav', x.c9 + x.c10]] : KEYS.map(k => [COLOR[k], x[k]]);
+      return `<div class="march ${cls}">
+        <div class="head"><span class="name">${name}</span><span class="cap">${fmt(tot)}${c ? ' / ' + fmt(c) : ''}</span></div>
+        <div class="bar">${segs.map(([cl, v]) => `<div class="${cl}" style="width:${v / (c || tot || 1) * 100}%"></div>`).join('')}</div>
+        <div class="breakdown">${inf}${cav}</div>
+      </div>`;
+    };
+
+    // What stays home: cavalry into the infirmary first, then infantry.
+    let room = infirm;
+    const inInf = { i10:0, i9:0, c9:0, c10:0 }, risk = { i10:0, i9:0, c9:0, c10:0 };
+    for (const k of ['c10','c9','i10','i9']){ const a = Math.min(home[k], room); inInf[k] = a; room -= a; risk[k] = home[k] - a; }
+
+    // Cavalry in the infirmary, split T10/T9 by the player's overall cavalry ratio (the attacker decides the real mix).
+    const cavIn = inInf.c9 + inInf.c10, cavAll = t.c10 + t.c9;
+    const r10 = cavAll ? t.c10 / cavAll : 1;
+    const est10 = Math.round(cavIn * r10), est9 = cavIn - est10;
+    const hc = Object.fromEntries(RES.map(r => [r, est10 * HEAL.c10[r] + est9 * HEAL.c9[r]]));
+    const perTxt = k => RES.map(r => fmt(HEAL[k][r])).join(' / ');
+    $('healOut').innerHTML = cavIn
+      ? `<p class="heal-intro">${T('healIntro', {n:fmt(cavIn), r10:Math.round(r10 * 100), r9:100 - Math.round(r10 * 100), a:fmt(est10), b:fmt(est9)})}</p>
+         <div class="heal-res">${RES.map(r => `<div class="stat"><div class="n" title="${fmt(hc[r])}">~${short(hc[r])}</div><div class="l">${T(r)}</div></div>`).join('')}</div>
+         <p class="heal-per">${T('healPer', {t10:perTxt('c10'), t9:perTxt('c9')})}</p>`
+      : `<div class="msg ok" style="margin-bottom:0;">${T('healNone')}</div>`;
+
+    let html = marches.map((m, i) => card(T('marchName', {i:i + 1}), m, cap, '', false)).join('');
+    if (toInfirm) html += card(T('homeName'), inInf, infirm, 'home', true);
+    if (over) html += card(T('riskName'), risk, 0, 'risk', true);
+    $('marchList').innerHTML = html;
+
+    const line = (x, u) => `${T('inf')} T10 ${fmt(x.i10)} / T9 ${fmt(x.i9)} | ${T('cav')} ` + (u ? fmt(x.c9 + x.c10) : `T10 ${fmt(x.c10)} / T9 ${fmt(x.c9)}`);
+    const text = [T('copyHead', {n, cap:fmt(cap)})]
+      .concat(marches.map((m, i) => `${T('marchName', {i:i + 1})}: ${line(m)}`))
+      .concat(toInfirm ? [`${T('copyHome')}: ${line(inInf, true)}`] : [])
+      .concat(over ? [`${T('copyRisk')}: ${line(risk, true)}`] : [])
+      .concat(cavIn ? [`${T('copyHeal')}: ` + RES.map(r => `${T(r)} ~${short(hc[r])}`).join(' / ')] : []).join('\n');
+    bindCopy('copyBtn', 'copyBox', 'copy', text);
+
+    // To-do summary: what to switch on, what to send, what to watch out for.
+    const fixes = ways.filter(w => w.includes(T('covers'))).map(w => w.replace(T('covers'), '').replace(/[\s:：]+$/, ''));
+    const steps = [];
+    if (lv) steps.push(T('sumBison', {lv, add:fmt(lv * BISON_PER_LV)}));
+    if (state.boost) steps.push(T('sumBoost', {p:state.boost, gems:fmt(+GEMS[state.boost].replace(/,/g, ''))}));
+    // Marches are spread evenly, so one line covers them all (any rounding difference is a few troops).
+    steps.push(T('sumMarches', {n, cap:fmt(cap)}) + '\n   ' + T('sumEach', {line:line(marches[0])}));
+    if (homeCav) steps.push(T('sumCamp', {n:fmt(infirmRaw ? Math.min(homeCav, infirm) : homeCav), cap:infirmRaw ? fmt(infirm) : '–'}));
+    else if (!homeTotal) steps.push(T('sumAllOut'));
+    const warns = [];
+    if (homeInf) warns.push(T('sumInfHome', {n:fmt(homeInf)}));
+    if (over) warns.push(T('sumOver', {n:fmt(over), per:fmt(Math.ceil(over / n))}) + (fixes.length ? '\n   ' + T('sumFix', {w:fixes.join(' / ')}) : ''));
+    const sum = [T('sumHead'), '']
+      .concat(steps.map((x, i) => `${i + 1}. ${x}`))
+      .concat(warns.length ? [''].concat(warns.map(w => `⚠ ${w}`)) : [])
+      .concat(cavIn ? ['', T('sumHeal', {res:RES.map(r => `${T(r)} ~${short(hc[r])}`).join(' / ')})] : []).join('\n');
+    $('sumText').textContent = sum;
+    $('sumEmpty').style.display = 'none'; $('sumWrap').style.display = 'block';
+    bindCopy('sumBtn', 'sumBox', 'sumCopy', sum);
+    $('results').style.display = 'block';
+  }
+
+  applyLang();
+  update();
+</script>
+</body>
+</html>
