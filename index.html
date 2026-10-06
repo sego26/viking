@@ -25,7 +25,7 @@
 
   .banner{ text-align:center; margin-bottom:40px; }
   .eyebrow{ font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:10px; }
-  h1{ font-family:'Cinzel',serif; font-weight:900; font-size:clamp(30px,6vw,46px); margin:0 0 10px; text-shadow:0 0 30px rgba(217,84,13,0.35); }
+  h1{ font-family:'Cinzel',Georgia,'Times New Roman',serif; font-weight:900; font-size:clamp(30px,6vw,46px); margin:0 0 10px; text-shadow:0 0 30px rgba(217,84,13,0.35); }
   h1 span{ color:var(--ember-bright); }
   .sub{ color:var(--dim); font-size:15px; max-width:500px; margin:0 auto; line-height:1.5; }
 
@@ -34,7 +34,7 @@
     content:attr(data-step); position:absolute; top:-12px; inset-inline-start:20px; background:var(--ember); color:#1a1310;
     font-family:'JetBrains Mono',monospace; font-weight:700; font-size:11px; padding:3px 10px; border-radius:3px; letter-spacing:1px;
   }
-  .panel h2{ font-family:'Cinzel',serif; font-size:18px; font-weight:700; margin:4px 0 16px; color:var(--gold-bright); }
+  .panel h2{ font-family:'Cinzel',Georgia,'Times New Roman',serif; font-size:18px; font-weight:700; margin:4px 0 16px; color:var(--gold-bright); }
   .hint{ font-size:13px; color:var(--dim); line-height:1.55; margin:-6px 0 16px; }
 
   .row{ display:flex; gap:10px; flex-wrap:wrap; }
@@ -51,11 +51,11 @@
   @media (max-width:560px){ .grid3{ grid-template-columns:1fr; } }
   .field{ margin-bottom:16px; } .field:last-child{ margin-bottom:0; }
   label{ display:block; font-size:12px; text-transform:uppercase; letter-spacing:1.2px; color:var(--dim); margin-bottom:7px; font-weight:600; }
-  input[type=number]{
+  input.numin, input[type=number]{
     width:100%; background:var(--bg-raised); border:1px solid var(--line); color:var(--parchment);
     font-family:'JetBrains Mono',monospace; font-size:16px; padding:11px 13px; border-radius:5px; outline:none;
   }
-  input[type=number]:focus{ border-color:var(--ember-bright); }
+  input.numin:focus, input[type=number]:focus{ border-color:var(--ember-bright); }
   .troop-label{ display:flex; align-items:center; gap:7px; }
   .swatch{ width:9px; height:9px; border-radius:2px; display:inline-block; }
   .sw-inf{ background:var(--steel); } .sw-cav{ background:var(--cav); } .sw-arc{ background:var(--gold); }
@@ -87,7 +87,7 @@
 
   /* results */
   .summary{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:18px; }
-  @media (max-width:520px){ .summary{ grid-template-columns:1fr; } }
+  @media (max-width:520px){ .summary{ gap:6px; } .summary .stat{ padding:10px 4px; } .summary .stat .n{ font-size:15px; } .summary .stat .l{ font-size:9.5px; letter-spacing:.5px; } }
   .stat{ background:var(--bg-raised); border:1px solid var(--line); border-radius:5px; padding:12px; text-align:center; }
   .stat .n{ font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:700; color:var(--gold-bright); }
   .stat .l{ font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--dim); margin-top:4px; }
@@ -100,7 +100,7 @@
   .march{ background:var(--bg-raised); border:1px solid var(--line); border-radius:5px; padding:13px 15px; margin-bottom:10px; }
   .march.lead{ border-color:rgba(232,191,60,0.5); }
   .march .head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:9px; gap:10px; }
-  .march .name{ font-family:'Cinzel',serif; font-weight:700; font-size:14px; }
+  .march .name{ font-family:'Cinzel',Georgia,'Times New Roman',serif; font-weight:700; font-size:14px; }
   .march.lead .name{ color:var(--gold-bright); }
   .march .cap{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--dim); white-space:nowrap; }
   .bar{ display:flex; height:18px; border-radius:3px; overflow:hidden; margin-bottom:9px; background:var(--bg); }
@@ -125,7 +125,7 @@
   .lang button.active{ border-color:var(--gold-bright); color:var(--gold-bright); background:rgba(201,162,39,0.10); }
     .grid2{ display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
   @media (max-width:560px){ .grid2{ grid-template-columns:1fr; } }
-  .troop-h{ font-family:'Cinzel',serif; font-size:14px; color:var(--parchment); margin:4px 0 10px; display:flex; align-items:center; gap:8px; }
+  .troop-h{ font-family:'Cinzel',Georgia,'Times New Roman',serif; font-size:14px; color:var(--parchment); margin:4px 0 10px; display:flex; align-items:center; gap:8px; }
   .troop-h + .grid2{ margin-bottom:18px; }
   .sw-inf9{ background:#b3bec6; } .sw-cav9{ background:#c48a60; }
   .b-inf9{ background:#b3bec6; } .b-cav9{ background:#c48a60; }
@@ -156,10 +156,43 @@
   .sum-text{ white-space:pre-wrap; background:var(--bg); border:1px solid var(--line); border-radius:5px; padding:12px 14px; margin:0; font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1.6; color:var(--parchment); }
   .heal-per{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--dim); margin:0; }
   .surprise{ display:block; text-align:center; text-decoration:none; margin:6px 0 0; padding:16px; border-radius:6px;
-    background:linear-gradient(180deg,var(--ember-bright),var(--ember)); color:#1a1310; font-family:'Cinzel',serif; font-weight:900; font-size:17px; letter-spacing:.5px;
+    background:linear-gradient(180deg,var(--ember-bright),var(--ember)); color:#1a1310; font-family:'Cinzel',Georgia,'Times New Roman',serif; font-weight:900; font-size:17px; letter-spacing:.5px;
     box-shadow:0 0 24px rgba(217,84,13,0.35); transition:transform .15s, box-shadow .15s; }
   .surprise:hover{ transform:translateY(-2px); box-shadow:0 0 34px rgba(242,121,44,0.55); }
   .surprise small{ display:block; font-family:'Inter',sans-serif; font-weight:600; font-size:12px; margin-top:4px; opacity:.8; }
+  /* ---- polish ---- */
+  .panel{ box-shadow:0 1px 0 rgba(255,255,255,0.03) inset, 0 10px 30px -18px rgba(0,0,0,0.8); transition:border-color .2s; }
+  .panel:focus-within{ border-color:#56473a; }
+  .panel::after{ content:''; position:absolute; inset:0 0 auto 0; height:1px; border-radius:6px 6px 0 0; background:linear-gradient(90deg,transparent,rgba(232,191,60,0.25),transparent); pointer-events:none; }
+  .pill{ transition:border-color .15s,color .15s,background .15s,transform .08s; }
+  .pill:active, .copy:active, .opt:active{ transform:scale(0.98); }
+  :focus-visible{ outline:2px solid var(--gold-bright); outline-offset:2px; }
+  input:focus-visible{ outline:none; box-shadow:0 0 0 3px rgba(242,121,44,0.18); }
+  input.numin::placeholder{ color:#6b6155; }
+  .ticks{ display:flex; justify-content:space-between; padding:6px 4px 0; font-family:'JetBrains Mono',monospace; font-size:10.5px; color:#6b6155; }
+  input[type=range]{ cursor:pointer; }
+  .bar div{ transition:width .35s ease; }
+  .march{ transition:border-color .2s; }
+  .march.risk .bar div{ background:repeating-linear-gradient(45deg,var(--danger) 0 6px,#7e2c20 6px 12px) !important; }
+  .stat .n{ transition:color .2s; }
+  .copy{ display:flex; align-items:center; justify-content:center; gap:8px; transition:border-color .15s, background .15s, color .15s; }
+  .copy::before{ content:''; width:13px; height:13px; flex:none; background:currentColor; opacity:.85;
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='5' y='5' width='9' height='9' rx='1.5' fill='none' stroke='black' stroke-width='1.6'/%3E%3Cpath d='M11 3.5V3a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h.5' fill='none' stroke='black' stroke-width='1.6'/%3E%3C/svg%3E") center/contain no-repeat;
+            mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='5' y='5' width='9' height='9' rx='1.5' fill='none' stroke='black' stroke-width='1.6'/%3E%3Cpath d='M11 3.5V3a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h.5' fill='none' stroke='black' stroke-width='1.6'/%3E%3C/svg%3E") center/contain no-repeat; }
+  .copy:hover{ background:rgba(201,162,39,0.08); color:var(--gold-bright); }
+  #sumBtn{ background:linear-gradient(180deg,rgba(201,162,39,0.22),rgba(201,162,39,0.10)); border-color:var(--gold); color:var(--gold-bright); font-weight:700; }
+  #sumBtn:hover{ background:linear-gradient(180deg,rgba(201,162,39,0.32),rgba(201,162,39,0.16)); }
+  .note.tip{ margin-top:4px; color:#857a69; }
+  .pill[data-marches]{ min-width:0; }
+  ::selection{ background:rgba(217,84,13,0.45); color:#fff; }
+  @media (prefers-reduced-motion:reduce){ *{ transition:none !important; animation:none !important; } }
+  .vid-modal{ position:fixed; inset:0; z-index:50; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(10,8,6,0.85); backdrop-filter:blur(3px); }
+  .vid-modal[hidden]{ display:none; }
+  .vid-box{ position:relative; width:min(860px,100%); }
+  .vid-frame{ position:relative; aspect-ratio:16/9; border-radius:6px; overflow:hidden; border:1px solid var(--gold); box-shadow:0 0 50px rgba(217,84,13,0.35); background:#000; }
+  .vid-frame iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+  .vid-close{ position:absolute; top:-42px; right:0; width:34px; height:34px; border-radius:50%; border:1px solid var(--line); background:var(--bg-raised); color:var(--parchment); font-size:15px; cursor:pointer; }
+  .vid-close:hover{ border-color:var(--gold); color:var(--gold-bright); }
   .footnote{ text-align:center; font-size:12px; color:var(--dim); margin-top:28px; line-height:1.6; }
 </style>
 </head>
@@ -179,17 +212,19 @@
   <!-- 01 TROOPS -->
   <div class="panel" data-step="01">
     <h2 data-i="s1"></h2>
-    <div class="troop-h"><span class="swatch sw-inf"></span><span data-i="inf"></span></div>
+    <!-- Same order as the in-game deployment screen: T10 inf, T10 cav, T9 inf, T9 cav. -->
+    <div class="troop-h">T10</div>
     <div class="grid2 tiers">
-      <div class="field"><label for="infT10">T10</label><input type="number" id="infT10" min="0" step="1000" data-ph="120000"></div>
-      <div class="field"><label for="infT9">T9</label><input type="number" id="infT9" min="0" step="1000" data-ph="80000"></div>
+      <div class="field"><label for="infT10"><span class="swatch sw-inf"></span> <span data-i="inf"></span></label><input type="text" inputmode="decimal" autocomplete="off" class="numin" id="infT10" data-ph="120000"></div>
+      <div class="field"><label for="cavT10"><span class="swatch sw-cav"></span> <span data-i="cav"></span></label><input type="text" inputmode="decimal" autocomplete="off" class="numin" id="cavT10" data-ph="150000"></div>
     </div>
-    <div class="troop-h"><span class="swatch sw-cav"></span><span data-i="cav"></span></div>
+    <div class="troop-h">T9</div>
     <div class="grid2 tiers">
-      <div class="field"><label for="cavT10">T10</label><input type="number" id="cavT10" min="0" step="1000" data-ph="150000"></div>
-      <div class="field"><label for="cavT9">T9</label><input type="number" id="cavT9" min="0" step="1000" data-ph="100000"></div>
+      <div class="field"><label for="infT9"><span class="swatch sw-inf9"></span> <span data-i="inf"></span></label><input type="text" inputmode="decimal" autocomplete="off" class="numin" id="infT9" data-ph="80000"></div>
+      <div class="field"><label for="cavT9"><span class="swatch sw-cav9"></span> <span data-i="cav"></span></label><input type="text" inputmode="decimal" autocomplete="off" class="numin" id="cavT9" data-ph="100000"></div>
     </div>
     <div class="note" data-i="archNote"></div>
+    <div class="note tip" data-i="numHint"></div>
   </div>
 
   <!-- 02 INFIRMARY -->
@@ -197,7 +232,7 @@
     <h2 data-i="s2"></h2>
     <div class="field">
       <label for="infirm" data-i="infirmL"></label>
-      <input type="number" id="infirm" min="0" step="1000" data-ph="100000">
+      <input type="text" inputmode="decimal" autocomplete="off" class="numin" id="infirm" data-ph="100000">
       <div class="note" data-i="infirmNote"></div>
     </div>
   </div>
@@ -215,7 +250,7 @@
     </div>
     <div class="field">
       <label for="squad" data-i="squadL"></label>
-      <input type="number" id="squad" min="1000" step="1000" data-ph="90000">
+      <input type="text" inputmode="decimal" autocomplete="off" class="numin" id="squad" data-ph="90000">
       <div class="note" data-i="squadNote"></div>
     </div>
     <div id="needs" class="needs"></div>
@@ -228,6 +263,7 @@
       <label for="bison" data-i="bisonL"></label>
       <div class="split-top"><span id="bisonLv"></span><b id="bisonAdd"></b></div>
       <input type="range" id="bison" class="bison" min="0" max="10" step="1" value="0">
+      <div class="ticks" aria-hidden="true"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span></div>
     </div>
   </div>
 
@@ -285,9 +321,16 @@
     </div>
   </div>
 
-  <a class="surprise" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener">
+  <a class="surprise" id="surprise" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener">
     <span data-i="surprise"></span><small data-i="surpriseSub"></small>
   </a>
+
+  <div class="vid-modal" id="vidModal" hidden>
+    <div class="vid-box">
+      <button class="vid-close" id="vidClose" aria-label="Close">✕</button>
+      <div class="vid-frame" id="vidFrame"></div>
+    </div>
+  </div>
 
   <p class="footnote" data-i="footnote"></p>
 </div>
@@ -295,6 +338,7 @@
 <script>
   const I18N = {
     "en": {
+      "numHint": "Tip: shorthand works — type 250k or 1.2m.",
       "surprise": "⚔ Secret trick: boost your Viking score",
       "surpriseSub": "One click. Trust me.",
       "locale": "en-US",
@@ -395,6 +439,7 @@
       "sumHeal": "Cavalry heal cost (estimate): {res}"
     },
     "fr": {
+      "numHint": "Astuce : les raccourcis marchent — tapez 250k ou 1,2m.",
       "surprise": "⚔ Astuce secrète : boostez votre score Vikings",
       "surpriseSub": "Un seul clic. Faites-moi confiance.",
       "locale": "fr-FR",
@@ -495,6 +540,7 @@
       "sumHeal": "Soins cavalerie (estimation) : {res}"
     },
     "es": {
+      "numHint": "Consejo: puedes abreviar — escribe 250k o 1,2m.",
       "surprise": "⚔ Truco secreto: mejora tu puntuación vikinga",
       "surpriseSub": "Un solo clic. Confía en mí.",
       "locale": "es-ES",
@@ -595,6 +641,7 @@
       "sumHeal": "Curación de caballería (estimación): {res}"
     },
     "pt": {
+      "numHint": "Dica: pode abreviar — digite 250k ou 1,2m.",
       "surprise": "⚔ Truque secreto: aumente sua pontuação Viking",
       "surpriseSub": "Um clique. Confie em mim.",
       "locale": "pt-BR",
@@ -695,6 +742,7 @@
       "sumHeal": "Cura da cavalaria (estimativa): {res}"
     },
     "zh-Hans": {
+      "numHint": "提示：可用简写，例如 250k、1.2m 或 25万。",
       "surprise": "⚔ 秘密技巧：提升维京积分",
       "surpriseSub": "点一下就行，相信我。",
       "locale": "zh-CN",
@@ -806,7 +854,20 @@
   const T = (k, v = {}) => (L()[k] ?? I18N.en[k]).replace(/\{(\w+)\}/g, (_, x) => v[x] ?? '');
   const $ = id => document.getElementById(id);
   const fmt = n => Math.round(n).toLocaleString(L().locale);
-  const num = id => Math.max(0, Math.floor(parseFloat($(id).value) || 0));
+  // Accepts "250000", "250,000", "250 000", "250k", "1.2m", "1,5m".
+  const parseNum = str => {
+    const t = String(str).trim().toLowerCase().replace(/\s|\u00a0|\u202f/g, '');
+    const m = t.match(/^([\d.,]*)([km万]?)$/);
+    if (!m || !m[1]) return 0;
+    const mult = { k:1e3, m:1e6, '万':1e4 }[m[2]] || 1;
+    // With a suffix, the last , or . is a decimal point; without one, separators are just grouping.
+    const v = mult > 1 ? parseFloat(m[1].replace(/[.,](?=.*[.,])/g, '').replace(',', '.')) : parseFloat(m[1].replace(/[.,]/g, ''));
+    return isFinite(v) ? v * mult : 0;
+  };
+  const num = id => { const el = $(id); return Math.max(0, Math.floor(el.type === 'range' ? +el.value : parseNum(el.value))); };
+  // Show thousands separators once the player leaves a field.
+  const tidy = el => { if (el.value.trim()) el.value = fmt(parseNum(el.value)); };
+  document.querySelectorAll('.numin').forEach(el => el.addEventListener('blur', () => tidy(el)));
 
   function applyLang(){
     document.documentElement.lang = L().html;
@@ -819,7 +880,7 @@
   document.querySelectorAll('[data-lang]').forEach(b => b.onclick = () => {
     lang = b.dataset.lang;
     try { localStorage.setItem('vkp-lang', lang); } catch (e) {}
-    applyLang(); update();
+    applyLang(); document.querySelectorAll('.numin').forEach(tidy); update();
   });
 
   const state = { marches:5, boost:0 };
@@ -1029,7 +1090,11 @@
     if (lv) steps.push(T('sumBison', {lv, add:fmt(lv * BISON_PER_LV)}));
     if (state.boost) steps.push(T('sumBoost', {p:state.boost, gems:fmt(+GEMS[state.boost].replace(/,/g, ''))}));
     // Marches are spread evenly, so one line covers them all (any rounding difference is a few troops).
-    steps.push(T('sumMarches', {n, cap:fmt(cap)}) + '\n   ' + T('sumEach', {line:line(marches[0])}));
+    // Same order as the in-game deployment screen: T10 inf, T10 cav, T9 inf, T9 cav.
+    const m0 = marches[0];
+    const deployLines = [['T10', 'inf', m0.i10], ['T10', 'cav', m0.c10], ['T9', 'inf', m0.i9], ['T9', 'cav', m0.c9]]
+      .map(([tier, k, v]) => `\n      ${tier} ${T(k)}: ${fmt(v)}`).join('');
+    steps.push(T('sumMarches', {n, cap:fmt(cap)}) + '\n   ' + T('sumEach', {line:''}).trim() + deployLines);
     if (homeCav) steps.push(T('sumCamp', {n:fmt(infirmRaw ? Math.min(homeCav, infirm) : homeCav), cap:infirmRaw ? fmt(infirm) : '–'}));
     else if (!homeTotal) steps.push(T('sumAllOut'));
     const warns = [];
@@ -1044,6 +1109,19 @@
     bindCopy('sumBtn', 'sumBox', 'sumCopy', sum);
     $('results').style.display = 'block';
   }
+
+  // Surprise: play the video in an overlay with autoplay. The click counts as a user gesture,
+  // so browsers allow sound. The link's href still works as a fallback (new tab).
+  const VID = 'dQw4w9WgXcQ';
+  const closeVid = () => { $('vidFrame').innerHTML = ''; $('vidModal').hidden = true; };
+  $('surprise').addEventListener('click', e => {
+    e.preventDefault();
+    $('vidFrame').innerHTML = `<iframe src="https://www.youtube.com/embed/${VID}?autoplay=1&rel=0&playsinline=1" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen title="Video"></iframe>`;
+    $('vidModal').hidden = false;
+  });
+  $('vidClose').onclick = closeVid;
+  $('vidModal').addEventListener('click', e => { if (e.target.id === 'vidModal') closeVid(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('vidModal').hidden) closeVid(); });
 
   applyLang();
   update();
