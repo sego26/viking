@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Viking Planner</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap');
 
   :root{
     --bg:#17130f; --bg-panel:#221c16; --bg-raised:#2b241c; --line:#3d3327;
@@ -73,14 +73,14 @@
   .opt{
     display:grid; grid-template-columns:1fr auto; gap:4px 12px; align-items:center;
     background:var(--bg-raised); border:1px solid var(--line); border-radius:5px; padding:12px 14px; cursor:pointer;
-    text-align:left; color:var(--parchment); font-family:inherit; width:100%;
+    text-align:start; color:var(--parchment); font-family:inherit; width:100%;
   }
   .opt:hover{ border-color:var(--gold); }
   .opt.active{ border-color:var(--gold-bright); background:rgba(201,162,39,0.10); box-shadow:inset 0 0 0 1px rgba(232,191,60,0.25); }
   .opt .ratio{ font-family:'JetBrains Mono',monospace; font-weight:700; font-size:16px; }
-  .opt .tag{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:1px; text-transform:uppercase; padding:2px 7px; border-radius:3px; margin-left:8px; vertical-align:2px; }
+  .opt .tag{ font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:1px; text-transform:uppercase; padding:2px 7px; border-radius:3px; margin-inline-start:8px; vertical-align:2px; }
   .tag.rec{ background:var(--ember); color:#1a1310; }
-  .opt .status{ font-size:12.5px; text-align:right; font-family:'JetBrains Mono',monospace; }
+  .opt .status{ font-size:12.5px; text-align:end; font-family:'JetBrains Mono',monospace; }
   .status.ok{ color:#a9c894; } .status.need{ color:#e0968a; }
   .opt .desc{ grid-column:1 / -1; font-size:12px; color:var(--dim); }
   .ratio-legend{ font-size:11.5px; color:var(--dim); margin-bottom:10px; font-family:'JetBrains Mono',monospace; }
@@ -118,7 +118,7 @@
   .gens .pill{ min-width:120px; flex:1 1 calc(25% - 10px); padding:11px 8px; font-family:'JetBrains Mono',monospace; }
   .tag.alt{ background:var(--steel); color:#1a1310; }
   .opt .ratio{ white-space:nowrap; }
-  @media (max-width:560px){ .opt{ grid-template-columns:1fr; } .opt .status{ text-align:left; } }
+  @media (max-width:560px){ .opt{ grid-template-columns:1fr; } .opt .status{ text-align:start; } }
   .lang{ display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin-bottom:22px; }
   .lang button{ background:var(--bg-raised); border:1px solid var(--line); color:var(--dim); font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:700; padding:6px 11px; border-radius:4px; cursor:pointer; letter-spacing:1px; }
   .lang button:hover{ border-color:var(--gold); color:var(--parchment); }
@@ -145,7 +145,7 @@
   .needs{ margin-top:18px; }
   .needs .msg{ margin-bottom:0; }
   .needs .wait{ font-size:12.5px; color:var(--dim); border:1px dashed var(--line); border-radius:5px; padding:11px 14px; line-height:1.5; }
-  .needs ul{ margin:8px 0 0; padding-left:18px; }
+  .needs ul{ margin:8px 0 0; padding-inline-start:18px; }
   .needs li{ margin:3px 0; }
   .needs li.miss{ color:var(--dim); }
   .heal-res{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:14px; }
@@ -153,6 +153,11 @@
   .heal-intro{ font-size:13px; color:var(--dim); line-height:1.55; margin:0 0 14px; }
   .heal-intro b{ color:var(--parchment); }
   html[lang^=zh] label, html[lang^=zh] .stat .l{ letter-spacing:0; }
+  /* Arabic: a font with Arabic glyphs everywhere, and no letter-spacing/uppercase (it breaks joined letters). */
+  html[lang=ar] body, html[lang=ar] h1, html[lang=ar] h2, html[lang=ar] .troop-h, html[lang=ar] .eyebrow, html[lang=ar] .surprise, html[lang=ar] .march .name, html[lang=ar] .sum-text, html[lang=ar] .copybox, html[lang=ar] .heal-per, html[lang=ar] .opt .status, html[lang=ar] .opt .tag, html[lang=ar] .ratio-legend, html[lang=ar] .breakdown{ font-family:'Noto Sans Arabic','JetBrains Mono',sans-serif; }
+  html[lang=ar] *{ letter-spacing:0 !important; }
+  html[lang=ar] input.numin{ direction:ltr; text-align:right; }
+  html[lang=ar] .stat .n{ direction:ltr; unicode-bidi:isolate; }
   .sum-text{ white-space:pre-wrap; background:var(--bg); border:1px solid var(--line); border-radius:5px; padding:12px 14px; margin:0; font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1.6; color:var(--parchment); }
   .heal-per{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--dim); margin:0; }
   .surprise{ display:block; text-align:center; text-decoration:none; margin:6px 0 0; padding:16px; border-radius:6px;
@@ -200,7 +205,7 @@
 <div class="wrap">
 
   <div class="lang" role="group" aria-label="Language">
-    <button data-lang="en">EN</button><button data-lang="fr">FR</button><button data-lang="es">ES</button><button data-lang="pt">PT</button><button data-lang="zh-Hans">简体</button>
+    <button data-lang="en">EN</button><button data-lang="fr">FR</button><button data-lang="es">ES</button><button data-lang="pt">PT</button><button data-lang="zh-Hans">简体</button><button data-lang="ar">العربية</button>
   </div>
 
   <div class="banner">
@@ -841,6 +846,107 @@
       "sumOver": "注意：{n} 部队超出医院容量，可能阵亡——需要每队 +{per} 出征人数或 +{n} 医院容量",
       "sumFix": "解决办法：{w}",
       "sumHeal": "骑兵治疗费用（估算）：{res}"
+    },
+    "ar": {
+      "numHint": "نصيحة: يمكنك الكتابة باختصار — مثل 250k أو 1.2m.",
+      "surprise": "⚔ خدعة سرية: ارفع نقاط الفايكنج",
+      "surpriseSub": "نقرة واحدة. ثق بي.",
+      "locale": "ar-u-nu-latn",
+      "html": "ar",
+      "dir": "rtl",
+      "docTitle": "مخطط الفايكنج",
+      "eyebrow": "Kingshot · انتقام الفايكنج",
+      "title": "مخطط <span>الفايكنج</span>",
+      "sub": "أخرج كل المشاة والفرسان من مدينتك. الفرسان الذين لا يتسع لهم الزحف يذهبون إلى معسكر — اطلب من حليف مهاجمته ليدخلوا المستشفى.",
+      "s1": "القوات المراد حمايتها",
+      "inf": "مشاة",
+      "cav": "فرسان",
+      "eg": "مثال",
+      "archNote": "الرماة يبقون في المدينة وليسوا جزءًا من الخطة.",
+      "s2": "سعة المستشفى",
+      "marchQ": "كم زحفًا يمكنك إرساله؟",
+      "squadL": "سعة الفرقة الأساسية",
+      "squadNote": "عدد قواتك العادي في كل زحف، قبل البيسون الجبار والتعزيزات.",
+      "bisonL": "مهارة البيسون الجبار",
+      "bisonOff": "غير مستخدمة",
+      "bisonLv": "المستوى {n}",
+      "boostL": "تعزيز سعة الفرقة",
+      "boostNone": "لا شيء",
+      "gems2k": "2,000 جوهرة",
+      "gems20k": "20,000 جوهرة",
+      "effL": "سعة الفرقة لكل زحف",
+      "infirmL": "سعة المستشفى",
+      "infirmNote": "عدد الجرحى الذي يمكنه استيعابه.",
+      "s3": "سعة الفرقة",
+      "empty": "أدخل قواتك وسعة الفرقة في الأعلى لرؤية الخطة.",
+      "statSent": "المرسَل في الزحوف",
+      "statInfirm": "سعة المستشفى",
+      "statRisk": "فوق السعة",
+      "lgInf10": "مشاة T10",
+      "lgInf9": "مشاة T9",
+      "lgCav9": "فرسان T9",
+      "lgCav10": "فرسان T10",
+      "copy": "نسخ الخطة لدردشة التحالف",
+      "copied": "تم النسخ ✓",
+      "copyManual": "النسخ محظور هنا — حدد النص أدناه وانسخه",
+      "footnote": "تُملأ الزحوف بالمشاة أولًا (T10 قبل T9)، ثم الفرسان (T9 قبل T10). الفرسان الباقون في المدينة يُعرضون كمجموع واحد، لأن المهاجم هو من يحدد أي مستوى يُصاب. تُوزَّع القوات بالتساوي على الزحوف.",
+      "marchName": "الزحف {i}",
+      "homeName": "معسكر ← مستشفى",
+      "riskName": "فوق سعة المستشفى",
+      "allOut": "كل المشاة والفرسان يتسعون في زحوفك الـ {n} — لا يبقى أحد في المدينة.",
+      "spare": " تبقّى {room} مكان فارغ في زحوفك.",
+      "cavHome": "<b>{n}</b> من الفرسان لا يتسعون في زحوفك. أرسلهم إلى معسكر واطلب من حليف مهاجمته ليدخلوا المستشفى (السعة <b>{cap}</b>) — أنت تقرر كم ترسل.",
+      "infHome": "<b>{n}</b> من المشاة لا يتسعون في زحوفك ويبقون في المدينة.",
+      "infNote": " المشاة يُرسَلون أولًا دائمًا، لذا كل زحف ممتلئ بالفعل.",
+      "over": "<b>{n}</b> من القوات فوق سعة المستشفى وقد يموتون. تحتاج <b>+{per}</b> سعة فرقة لكل زحف، أو <b>+{n}</b> سعة مستشفى.",
+      "fitsInfirm": "مستشفاك ({cap}) يستوعب كل القوات المتبقية وعددها {used}.",
+      "noInfirm": "أدخل سعة المستشفى للتحقق من القوات الباقية في المدينة.",
+      "waysH": "طرق تغطية ذلك:",
+      "wayBoost": "تعزيز +{p}% ({gems} جوهرة): {res}",
+      "wayBison": "البيسون الجبار المستوى {lv}: {res}",
+      "wayBisonMax": "البيسون الجبار المستوى 10: {res}",
+      "wayCombo": "تعزيز +20% والبيسون الجبار المستوى {lv}: {res}",
+      "covers": "✓ يغطي الكل",
+      "leaves": "ما زال {n} فوق السعة",
+      "copyHead": "انتقام الفايكنج — {n} زحوف بسعة {cap}",
+      "copyHome": "معسكر ← مستشفى",
+      "copyRisk": "فوق سعة المستشفى",
+      "s4": "مهارة الحيوان الأليف",
+      "s5": "تعزيز الانتشار",
+      "s6": "خطتك",
+      "needWait": "أدخل قواتك والمستشفى وسعة الفرقة لترى مهارة الحيوان الأليف أو التعزيز الذي تحتاجه.",
+      "needNone": "سعة فرقتك الأساسية ومستشفاك يغطيان كل شيء — لا حاجة لمهارة حيوان أليف أو تعزيز.",
+      "needOver": "بدون مهارة حيوان أليف أو تعزيز، سيكون <b>{n}</b> من القوات فوق سعة المستشفى. تحتاج <b>+{per}</b> سعة فرقة لكل زحف (أو <b>+{n}</b> مستشفى).",
+      "needOpts": "أي واحد من هذه يغطي ذلك:",
+      "optNone": "بدون تعزيز",
+      "optBuff": "تعزيز +{p}% ({gems} جوهرة)",
+      "needLv": "البيسون الجبار مستوى {lv}",
+      "needLv0": "لا حاجة لمهارة حيوان أليف",
+      "needMax": "غير كافٍ — ما زال {n} فوق السعة عند المستوى 10",
+      "s7": "تكلفة علاج الفرسان",
+      "bread": "خبز",
+      "wood": "خشب",
+      "stone": "حجر",
+      "iron": "حديد",
+      "healEmpty": "ستعرض خطتك التكلفة التقديرية لعلاج الفرسان المرسلين إلى المستشفى.",
+      "healNone": "لا يذهب أي فرسان إلى المستشفى، فلا شيء يحتاج إلى علاج.",
+      "healIntro": "تقدير لـ <b>{n}</b> من الفرسان في المستشفى، مقسّمين حسب نسبة فرسانك ({r10}% T10 / {r9}% T9): حوالي <b>{a}</b> T10 و<b>{b}</b> T9. التكلفة الفعلية تعتمد على عدد كل مستوى يدخل المستشفى.",
+      "healPer": "لكل فارس (خبز / خشب / حجر / حديد) — T10: {t10} · T9: {t9}",
+      "copyHeal": "تكلفة علاج الفرسان (تقدير)",
+      "s8": "الملخص",
+      "sumCopy": "نسخ الملخص",
+      "sumEmpty": "أكمل الخطوات أعلاه للحصول على ملخص المهام.",
+      "sumHead": "انتقام الفايكنج — المهام",
+      "sumBison": "فعّل البيسون الجبار مستوى {lv} (+{add} لكل زحف)",
+      "sumBoost": "استخدم تعزيز سعة الفرقة +{p}% ({gems} جوهرة)",
+      "sumMarches": "أرسل {n} زحوف بسعة {cap}:",
+      "sumEach": "كل زحف: {line}",
+      "sumCamp": "أرسل {n} من الفرسان إلى معسكر واطلب من حليف مهاجمته ليدخلوا المستشفى (السعة {cap})",
+      "sumAllOut": "كل شيء يتسع في زحوفك — لا شيء يُرسل إلى معسكر",
+      "sumInfHome": "تحذير: {n} من المشاة لا يتسعون ويبقون في المدينة",
+      "sumOver": "تحذير: {n} من القوات فوق سعة المستشفى وقد يموتون — تحتاج +{per} سعة فرقة لكل زحف أو +{n} مستشفى",
+      "sumFix": "الحل: {w}",
+      "sumHeal": "تكلفة علاج الفرسان (تقدير): {res}"
     }
   };
 
