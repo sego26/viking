@@ -155,6 +155,11 @@
   html[lang^=zh] label, html[lang^=zh] .stat .l{ letter-spacing:0; }
   .sum-text{ white-space:pre-wrap; background:var(--bg); border:1px solid var(--line); border-radius:5px; padding:12px 14px; margin:0; font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1.6; color:var(--parchment); }
   .heal-per{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--dim); margin:0; }
+  .surprise{ display:block; text-align:center; text-decoration:none; margin:6px 0 0; padding:16px; border-radius:6px;
+    background:linear-gradient(180deg,var(--ember-bright),var(--ember)); color:#1a1310; font-family:'Cinzel',serif; font-weight:900; font-size:17px; letter-spacing:.5px;
+    box-shadow:0 0 24px rgba(217,84,13,0.35); transition:transform .15s, box-shadow .15s; }
+  .surprise:hover{ transform:translateY(-2px); box-shadow:0 0 34px rgba(242,121,44,0.55); }
+  .surprise small{ display:block; font-family:'Inter',sans-serif; font-weight:600; font-size:12px; margin-top:4px; opacity:.8; }
   .footnote{ text-align:center; font-size:12px; color:var(--dim); margin-top:28px; line-height:1.6; }
 </style>
 </head>
@@ -280,12 +285,18 @@
     </div>
   </div>
 
+  <a class="surprise" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank" rel="noopener">
+    <span data-i="surprise"></span><small data-i="surpriseSub"></small>
+  </a>
+
   <p class="footnote" data-i="footnote"></p>
 </div>
 
 <script>
   const I18N = {
     "en": {
+      "surprise": "⚔ Secret trick: boost your Viking score",
+      "surpriseSub": "One click. Trust me.",
       "locale": "en-US",
       "html": "en",
       "docTitle": "Viking Planner",
@@ -384,6 +395,8 @@
       "sumHeal": "Cavalry heal cost (estimate): {res}"
     },
     "fr": {
+      "surprise": "⚔ Astuce secrète : boostez votre score Vikings",
+      "surpriseSub": "Un seul clic. Faites-moi confiance.",
       "locale": "fr-FR",
       "html": "fr",
       "docTitle": "Planificateur Vikings",
@@ -482,6 +495,8 @@
       "sumHeal": "Soins cavalerie (estimation) : {res}"
     },
     "es": {
+      "surprise": "⚔ Truco secreto: mejora tu puntuación vikinga",
+      "surpriseSub": "Un solo clic. Confía en mí.",
       "locale": "es-ES",
       "html": "es",
       "docTitle": "Planificador Vikingos",
@@ -580,6 +595,8 @@
       "sumHeal": "Curación de caballería (estimación): {res}"
     },
     "pt": {
+      "surprise": "⚔ Truque secreto: aumente sua pontuação Viking",
+      "surpriseSub": "Um clique. Confie em mim.",
       "locale": "pt-BR",
       "html": "pt",
       "docTitle": "Planejador Vikings",
@@ -678,6 +695,8 @@
       "sumHeal": "Cura da cavalaria (estimativa): {res}"
     },
     "zh-Hans": {
+      "surprise": "⚔ 秘密技巧：提升维京积分",
+      "surpriseSub": "点一下就行，相信我。",
       "locale": "zh-CN",
       "html": "zh-Hans",
       "dir": "ltr",
