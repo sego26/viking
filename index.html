@@ -199,6 +199,32 @@
   .vid-close{ position:absolute; top:-42px; right:0; width:34px; height:34px; border-radius:50%; border:1px solid var(--line); background:var(--bg-raised); color:var(--parchment); font-size:15px; cursor:pointer; }
   .vid-close:hover{ border-color:var(--gold); color:var(--gold-bright); }
   .footnote{ text-align:center; font-size:12px; color:var(--dim); margin-top:28px; line-height:1.6; }
+  /* ---- quick guide ---- */
+  .guide{ padding:0; }
+  .guide summary{ list-style:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:10px; padding:16px 22px; font-family:'Cinzel',Georgia,'Times New Roman',serif; font-size:16px; font-weight:700; color:var(--gold-bright); user-select:none; }
+  .guide summary::-webkit-details-marker{ display:none; }
+  .guide summary::after{ content:''; width:8px; height:8px; flex:none; border-right:2px solid var(--dim); border-bottom:2px solid var(--dim); transform:rotate(45deg); transition:transform .2s; margin-top:-4px; }
+  .guide[open] summary::after{ transform:rotate(-135deg); margin-top:4px; }
+  .guide ol{ list-style:none; counter-reset:g; margin:0; padding:0 22px 20px; display:grid; gap:10px; }
+  .guide li{ counter-increment:g; display:grid; grid-template-columns:24px 1fr; gap:10px; align-items:start; font-size:13.5px; line-height:1.5; color:var(--parchment); }
+  .guide.icons li::before{ content:none; }
+  .guide.icons li{ grid-template-columns:30px 1fr; }
+  .guide .ic{ width:30px; height:30px; border-radius:7px; display:flex; align-items:center; justify-content:center; background:rgba(217,84,13,0.14); border:1px solid rgba(242,121,44,0.45); color:var(--ember-bright); }
+  .guide .ic svg{ width:17px; height:17px; }
+  .slots{ display:flex; gap:6px; margin-top:9px; direction:ltr; }
+  .slot{ flex:1; min-height:46px; border:1px dashed var(--line); border-radius:5px; display:flex; flex-direction:column; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-size:12px; color:#6b6155; text-align:center; padding:4px; }
+  .slot.cap{ flex:2.2; border:1px solid var(--gold); background:rgba(201,162,39,0.10); color:var(--gold-bright); }
+  .slot.any{ border:1px solid var(--line); background:var(--bg-raised); color:var(--dim); }
+  .slot.any em{ font-style:normal; font-size:10.5px; }
+  .slot.any b{ font-family:'Inter',sans-serif; font-size:11.5px; color:var(--parchment); font-weight:600; margin-top:2px; }
+  html[lang=ar] .slot.any b{ font-family:'Noto Sans Arabic',sans-serif; }
+  .slot.cap em{ font-style:normal; font-size:10.5px; letter-spacing:1px; text-transform:uppercase; }
+  .slot.cap b{ font-family:'Inter',sans-serif; font-size:11.5px; color:var(--parchment); font-weight:600; margin-top:2px; }
+  html[lang=ar] .slot.cap em{ font-family:'Noto Sans Arabic',sans-serif; }
+  .guide li b{ color:var(--gold-bright); }
+  .guide + .guide{ margin-top:-8px; }
+  .guide li::before{ content:counter(g); width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(217,84,13,0.18); border:1px solid var(--ember); color:var(--ember-bright); font-family:'JetBrains Mono',monospace; font-size:11.5px; font-weight:700; }
+  html[lang=ar] .guide summary, html[lang=ar] .guide li::before{ font-family:'Noto Sans Arabic','JetBrains Mono',sans-serif; }
 </style>
 </head>
 <body>
@@ -213,6 +239,33 @@
     <h1 data-i="title"></h1>
     <p class="sub" data-i="sub"></p>
   </div>
+
+  <!-- EVENT TIPS -->
+  <details class="panel guide icons" id="tips" open>
+    <summary data-i="tTitle"></summary>
+    <ol>
+      <li><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h5v16h-5"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></svg></i><div><span data-i="t1"></span></div></li>
+      <li><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></i><div><span data-i="t2"></span></div></li>
+      <li><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 19h18"/><path d="M4 16L3 7l5 4 4-7 4 7 5-4-1 9z"/></svg></i><div><span data-i="t3"></span><div class="slots" aria-hidden="true"><div class="slot cap"><em data-i="dCap"></em><b>Chenko / Amadeus / Yeonwoo</b></div><div class="slot any"><em>2</em><b data-i="dAny"></b></div><div class="slot any"><em>3</em><b data-i="dAny"></b></div></div></div></li>
+      <li><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4l10 10M5 4h4M5 4v4"/><path d="M19 4L9 14M19 4h-4M19 4v4"/><path d="M8 16l-3 3M16 16l3 3"/></svg></i><div><span data-i="t4"></span></div></li>
+      <li><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6"/><circle cx="19" cy="7" r="2.5" fill="#6f9b52" stroke="#6f9b52"/></svg></i><div><span data-i="t5"></span></div></li>
+      <li><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h12l-2.5 4L17 12H5"/></svg></i><div><span data-i="t6"></span></div></li>
+      <li><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/><path d="M5.6 5.6l12.8 12.8"/></svg></i><div><span data-i="t7"></span></div></li>
+      <li><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></i><div><span data-i="t8"></span></div></li>
+    </ol>
+  </details>
+
+  <!-- QUICK GUIDE -->
+  <details class="panel guide" id="guide" open>
+    <summary data-i="gTitle"></summary>
+    <ol>
+      <li><span data-i="g1"></span></li>
+      <li><span data-i="g2"></span></li>
+      <li><span data-i="g3"></span></li>
+      <li><span data-i="g4"></span></li>
+      <li><span data-i="g5"></span></li>
+    </ol>
+  </details>
 
   <!-- 01 TROOPS -->
   <div class="panel" data-step="01">
@@ -343,6 +396,23 @@
 <script>
   const I18N = {
     "en": {
+      "dAny": "Any hero",
+      "dCap": "Captain",
+      "tTitle": "Viking event best practices",
+      "t1": "<b>Empty your city.</b> Send all infantry and cavalry out — troops left home fight too and take kills (and points) from your reinforcers.",
+      "t2": "<b>Prep early.</b> Heal any old wounded first so your infirmary has room for the cavalry this planner sends there, turn on deployment buffs (pet skill, gems), then send reinforcements before the start.",
+      "t3": "<b>Heroes.</b> Keep your 3 strongest heroes in the Guard Station — they boost everyone reinforcing you. For each march's captain (the left hero), use a Bear Hunt joiner hero (Chenko, Amadeus, Yeonwoo), not a defensive one like Howard or Gordon.",
+      "t4": "<b>Troops.</b> Infantry gets most kills; cavalry helps in higher waves. Archers rarely score, so leave them home.",
+      "t5": "<b>Reinforce online members first.</b> Waves 7, 14 and 17 only hit online players. About 4 reinforcers per city is enough — skip players who left their own troops at home.",
+      "t6": "<b>HQ waves 10 and 20.</b> Once wave 9 (or 19) is fully over, move one strong march to HQ. Bring it back after the wave — recalling early loses points.",
+      "t7": "<b>Don't heal during the event.</b> Healed troops go home and steal kills. Heal after it ends.",
+      "t8": "<b>Going offline?</b> Reinforce allies before you log off. If your city fails twice, Vikings stop attacking it, but you still score by reinforcing others.",
+      "gTitle": "Quick guide",
+      "g1": "Enter your T10 and T9 infantry and cavalry (archers stay home). Shorthand like 250k works.",
+      "g2": "Add your infirmary capacity, how many marches you can send, and your base squad deployment.",
+      "g3": "Step 03 tells you if you need Mighty Bison or a deployment buff — set them in steps 04 and 05.",
+      "g4": "Check your plan: marches are filled for you, and leftover cavalry goes to a camp an ally attacks to send them to the infirmary.",
+      "g5": "Copy the summary (step 08) and follow it in game.",
       "numHint": "Tip: shorthand works — type 250k or 1.2m.",
       "surprise": "⚔ Secret trick: boost your Viking score",
       "surpriseSub": "One click. Trust me.",
@@ -444,6 +514,23 @@
       "sumHeal": "Cavalry heal cost (estimate): {res}"
     },
     "fr": {
+      "dAny": "N'importe quel héros",
+      "dCap": "Capitaine",
+      "tTitle": "Bonnes pratiques de l'événement Vikings",
+      "t1": "<b>Videz votre ville.</b> Envoyez toute l'infanterie et la cavalerie — les troupes restées en ville combattent aussi et volent les éliminations (et les points) de vos renforts.",
+      "t2": "<b>Préparez-vous tôt.</b> Soignez d'abord les anciens blessés pour que l'infirmerie ait de la place pour la cavalerie que ce plan y envoie, activez les bonus de déploiement (familier, gemmes), puis envoyez vos renforts avant le début.",
+      "t3": "<b>Héros.</b> Gardez vos 3 meilleurs héros au Poste de garde — ils renforcent tous ceux qui vous défendent. Comme capitaine de chaque marche (le héros de gauche), prenez un héros « joiner » de la Chasse à l'ours (Chenko, Amadeus, Yeonwoo), pas un défensif comme Howard ou Gordon.",
+      "t4": "<b>Troupes.</b> L'infanterie fait le plus d'éliminations ; la cavalerie aide dans les vagues élevées. Les archers marquent rarement, laissez-les en ville.",
+      "t5": "<b>Renforcez d'abord les membres en ligne.</b> Les vagues 7, 14 et 17 ne visent que les joueurs en ligne. Environ 4 renforts par ville suffisent — évitez ceux qui ont laissé leurs troupes en ville.",
+      "t6": "<b>Vagues QG 10 et 20.</b> Une fois la vague 9 (ou 19) terminée, envoyez une marche forte au QG. Rappelez-la après la vague — la rappeler trop tôt coûte des points.",
+      "t7": "<b>Ne soignez pas pendant l'événement.</b> Les troupes soignées rentrent en ville et volent des éliminations. Soignez après la fin.",
+      "t8": "<b>Vous partez ?</b> Renforcez vos alliés avant de vous déconnecter. Après deux défenses ratées, les Vikings ne vous attaquent plus, mais vous marquez encore en renforçant.",
+      "gTitle": "Guide rapide",
+      "g1": "Saisissez votre infanterie et cavalerie T10 et T9 (les archers restent en ville). Les raccourcis comme 250k marchent.",
+      "g2": "Indiquez la capacité de votre infirmerie, le nombre de marches et votre déploiement d'escouade de base.",
+      "g3": "L'étape 03 indique s'il vous faut Bison puissant ou un bonus de déploiement — réglez-les aux étapes 04 et 05.",
+      "g4": "Consultez votre plan : les marches sont remplies pour vous, et la cavalerie en trop part dans un camp qu'un allié attaque pour l'envoyer à l'infirmerie.",
+      "g5": "Copiez le résumé (étape 08) et suivez-le en jeu.",
       "numHint": "Astuce : les raccourcis marchent — tapez 250k ou 1,2m.",
       "surprise": "⚔ Astuce secrète : boostez votre score Vikings",
       "surpriseSub": "Un seul clic. Faites-moi confiance.",
@@ -545,6 +632,23 @@
       "sumHeal": "Soins cavalerie (estimation) : {res}"
     },
     "es": {
+      "dAny": "Cualquier héroe",
+      "dCap": "Capitán",
+      "tTitle": "Buenas prácticas del evento vikingo",
+      "t1": "<b>Vacía tu ciudad.</b> Envía toda la infantería y caballería — las tropas que quedan en casa también luchan y les quitan bajas (y puntos) a tus refuerzos.",
+      "t2": "<b>Prepárate pronto.</b> Cura primero a los heridos antiguos para que la enfermería tenga espacio para la caballería que este plan envía allí, activa los bonus de despliegue (mascota, gemas) y envía refuerzos antes del inicio.",
+      "t3": "<b>Héroes.</b> Deja tus 3 mejores héroes en el Puesto de guardia — potencian a todos los que te refuerzan. Como capitán de cada marcha (el héroe de la izquierda), usa un héroe de unión de la Caza del oso (Chenko, Amadeus, Yeonwoo), no uno defensivo como Howard o Gordon.",
+      "t4": "<b>Tropas.</b> La infantería consigue más bajas; la caballería ayuda en oleadas altas. Los arqueros casi no puntúan, déjalos en casa.",
+      "t5": "<b>Refuerza primero a los miembros en línea.</b> Las oleadas 7, 14 y 17 solo atacan a jugadores en línea. Unos 4 refuerzos por ciudad bastan — evita a quien dejó sus tropas en casa.",
+      "t6": "<b>Oleadas del cuartel 10 y 20.</b> Cuando termine la oleada 9 (o 19), envía una marcha fuerte al cuartel. Retírala después de la oleada — hacerlo antes cuesta puntos.",
+      "t7": "<b>No cures durante el evento.</b> Las tropas curadas vuelven a casa y roban bajas. Cura al terminar.",
+      "t8": "<b>¿Te desconectas?</b> Refuerza a tus aliados antes de salir. Si tu ciudad falla dos veces, los vikingos dejan de atacarla, pero sigues puntuando al reforzar.",
+      "gTitle": "Guía rápida",
+      "g1": "Introduce tu infantería y caballería T10 y T9 (los arqueros se quedan en casa). Puedes abreviar, como 250k.",
+      "g2": "Añade la capacidad de tu enfermería, cuántas marchas puedes enviar y tu despliegue base de escuadrón.",
+      "g3": "El paso 03 te dice si necesitas Bisonte poderoso o un bonus de despliegue — ajústalos en los pasos 04 y 05.",
+      "g4": "Revisa tu plan: las marchas se llenan solas y la caballería sobrante va a un campamento que un aliado ataca para mandarla a la enfermería.",
+      "g5": "Copia el resumen (paso 08) y síguelo en el juego.",
       "numHint": "Consejo: puedes abreviar — escribe 250k o 1,2m.",
       "surprise": "⚔ Truco secreto: mejora tu puntuación vikinga",
       "surpriseSub": "Un solo clic. Confía en mí.",
@@ -646,6 +750,23 @@
       "sumHeal": "Curación de caballería (estimación): {res}"
     },
     "pt": {
+      "dAny": "Qualquer herói",
+      "dCap": "Capitão",
+      "tTitle": "Boas práticas do evento Viking",
+      "t1": "<b>Esvazie sua cidade.</b> Envie toda a infantaria e cavalaria — tropas em casa também lutam e roubam abates (e pontos) dos seus reforços.",
+      "t2": "<b>Prepare-se cedo.</b> Cure primeiro os feridos antigos para a enfermaria ter espaço para a cavalaria que este plano manda para lá, ative os bônus de implantação (mascote, gemas) e envie reforços antes do início.",
+      "t3": "<b>Heróis.</b> Deixe seus 3 melhores heróis no Posto de guarda — eles fortalecem todos que reforçam você. Como capitão de cada marcha (o herói da esquerda), use um herói de apoio da Caça ao urso (Chenko, Amadeus, Yeonwoo), não um defensivo como Howard ou Gordon.",
+      "t4": "<b>Tropas.</b> A infantaria faz mais abates; a cavalaria ajuda nas ondas mais altas. Arqueiros quase não pontuam, deixe-os em casa.",
+      "t5": "<b>Reforce primeiro os membros online.</b> As ondas 7, 14 e 17 só atacam jogadores online. Cerca de 4 reforços por cidade bastam — evite quem deixou as próprias tropas em casa.",
+      "t6": "<b>Ondas do QG 10 e 20.</b> Quando a onda 9 (ou 19) terminar, envie uma marcha forte ao QG. Traga de volta depois da onda — recolher cedo custa pontos.",
+      "t7": "<b>Não cure durante o evento.</b> Tropas curadas voltam para casa e roubam abates. Cure depois que acabar.",
+      "t8": "<b>Vai sair?</b> Reforce aliados antes de desconectar. Se sua cidade falhar duas vezes, os vikings param de atacá-la, mas você ainda pontua reforçando.",
+      "gTitle": "Guia rápido",
+      "g1": "Informe sua infantaria e cavalaria T10 e T9 (os arqueiros ficam em casa). Pode abreviar, como 250k.",
+      "g2": "Adicione a capacidade da enfermaria, quantas marchas você pode enviar e a implantação base do esquadrão.",
+      "g3": "A etapa 03 mostra se você precisa do Bisão poderoso ou de um bônus de implantação — ajuste nas etapas 04 e 05.",
+      "g4": "Confira seu plano: as marchas são preenchidas para você, e a cavalaria que sobrar vai para um acampamento que um aliado ataca para mandá-la à enfermaria.",
+      "g5": "Copie o resumo (etapa 08) e siga no jogo.",
       "numHint": "Dica: pode abreviar — digite 250k ou 1,2m.",
       "surprise": "⚔ Truque secreto: aumente sua pontuação Viking",
       "surpriseSub": "Um clique. Confie em mim.",
@@ -747,6 +868,23 @@
       "sumHeal": "Cura da cavalaria (estimativa): {res}"
     },
     "zh-Hans": {
+      "dAny": "任意英雄",
+      "dCap": "队长",
+      "tTitle": "维京活动实用技巧",
+      "t1": "<b>清空城内。</b>派出所有步兵和骑兵——留在城内的部队也会参战，抢走增援者的击杀（和积分）。",
+      "t2": "<b>提前准备。</b>先治疗医院里原有的伤兵，给本规划送进医院的骑兵腾出空间；开启出征增益（宠物技能、宝石），并在开始前派出增援。",
+      "t3": "<b>英雄。</b>把最强的 3 名英雄留在守卫站——他们会强化所有增援你的部队。每支增援队伍的队长（最左边的英雄）用猎熊集结的加入英雄（Chenko、Amadeus、Yeonwoo），不要用 Howard、Gordon 等防御型英雄。",
+      "t4": "<b>兵种。</b>步兵击杀最多；骑兵在高波次有帮助。弓兵几乎不得分，留在城内即可。",
+      "t5": "<b>优先增援在线成员。</b>第 7、14、17 波只攻击在线玩家。每座城约 4 支增援就够——跳过把自己部队留在城内的玩家。",
+      "t6": "<b>第 10、20 波打联盟总部。</b>第 9（或 19）波完全结束后，派一支强力队伍去总部。该波结束后再召回——过早召回会丢积分。",
+      "t7": "<b>活动期间不要治疗。</b>治疗后的部队会回城并抢走击杀。活动结束后再治疗。",
+      "t8": "<b>要下线？</b>下线前先增援盟友。城市防守失败两次后维京人不再攻击你，但增援他人仍可得分。",
+      "gTitle": "快速指南",
+      "g1": "输入 T10 和 T9 的步兵与骑兵数量（弓兵留在城内）。可用简写，如 250k 或 25万。",
+      "g2": "填写医院容量、可派出的队伍数和基础出征人数。",
+      "g3": "第 03 步会提示是否需要强力野牛或出征增益——在第 04、05 步中设置。",
+      "g4": "查看计划：队伍会自动分配好，多出的骑兵放到营地，请盟友攻击，让他们进入医院。",
+      "g5": "复制总结（第 08 步），在游戏中照做即可。",
       "numHint": "提示：可用简写，例如 250k、1.2m 或 25万。",
       "surprise": "⚔ 秘密技巧：提升维京积分",
       "surpriseSub": "点一下就行，相信我。",
@@ -848,6 +986,23 @@
       "sumHeal": "骑兵治疗费用（估算）：{res}"
     },
     "ar": {
+      "dAny": "أي بطل",
+      "dCap": "القائد",
+      "tTitle": "أفضل الممارسات في حدث الفايكنج",
+      "t1": "<b>أفرغ مدينتك.</b> أرسل كل المشاة والفرسان — القوات الباقية في المدينة تقاتل أيضًا وتأخذ القتلى (والنقاط) من معززيك.",
+      "t2": "<b>استعد مبكرًا.</b> عالج الجرحى القدامى أولًا ليتسع المستشفى للفرسان الذين ترسلهم هذه الخطة إليه، وفعّل تعزيزات الانتشار (مهارة الحيوان الأليف، الجواهر)، ثم أرسل التعزيزات قبل البدء.",
+      "t3": "<b>الأبطال.</b> أبقِ أقوى 3 أبطال في محطة الحراسة — فهم يقوّون كل من يعززك. اجعل قائد كل زحف (البطل الأيسر) من أبطال الانضمام في صيد الدب (Chenko وAmadeus وYeonwoo)، لا بطلًا دفاعيًا مثل Howard أو Gordon.",
+      "t4": "<b>القوات.</b> المشاة يحققون أكثر القتلى؛ والفرسان يساعدون في الموجات العليا. الرماة نادرًا ما يسجلون، فأبقِهم في المدينة.",
+      "t5": "<b>عزّز الأعضاء المتصلين أولًا.</b> الموجات 7 و14 و17 تهاجم اللاعبين المتصلين فقط. حوالي 4 معززين لكل مدينة يكفي — تجنب من ترك قواته في مدينته.",
+      "t6": "<b>موجات المقر 10 و20.</b> بعد انتهاء الموجة 9 (أو 19) تمامًا، أرسل زحفًا قويًا إلى المقر. أعده بعد الموجة — الاستدعاء المبكر يخسرك نقاطًا.",
+      "t7": "<b>لا تعالج أثناء الحدث.</b> القوات المعالَجة تعود إلى المدينة وتأخذ القتلى. عالج بعد انتهاء الحدث.",
+      "t8": "<b>ستغادر؟</b> عزّز حلفاءك قبل تسجيل الخروج. إذا فشلت مدينتك مرتين يتوقف الفايكنج عن مهاجمتها، لكنك تواصل التسجيل بتعزيز الآخرين.",
+      "gTitle": "دليل سريع",
+      "g1": "أدخل المشاة والفرسان من T10 وT9 (الرماة يبقون في المدينة). يمكنك الكتابة باختصار مثل 250k.",
+      "g2": "أضف سعة المستشفى، وعدد الزحوف التي يمكنك إرسالها، وسعة الفرقة الأساسية.",
+      "g3": "الخطوة 03 تخبرك إن كنت تحتاج البيسون الجبار أو تعزيز الانتشار — اضبطهما في الخطوتين 04 و05.",
+      "g4": "راجع خطتك: تُملأ الزحوف تلقائيًا، والفرسان الزائدون يذهبون إلى معسكر يهاجمه حليف ليدخلوا المستشفى.",
+      "g5": "انسخ الملخص (الخطوة 08) واتبعه في اللعبة.",
       "numHint": "نصيحة: يمكنك الكتابة باختصار — مثل 250k أو 1.2m.",
       "surprise": "⚔ خدعة سرية: ارفع نقاط الفايكنج",
       "surpriseSub": "نقرة واحدة. ثق بي.",
@@ -1230,6 +1385,11 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('vidModal').hidden) closeVid(); });
 
   applyLang();
+  ['guide','tips'].forEach(id => {
+    const g = $(id), key = 'vkp-' + id;
+    try { if (localStorage.getItem(key) === 'closed') g.open = false; } catch (e) {}
+    g.addEventListener('toggle', () => { try { localStorage.setItem(key, g.open ? 'open' : 'closed'); } catch (e) {} });
+  });
   update();
 </script>
 </body>
